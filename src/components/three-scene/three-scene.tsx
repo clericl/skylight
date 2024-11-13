@@ -1,4 +1,4 @@
-import { Environment, Sky } from "@react-three/drei";
+import { Environment, OrbitControls, Sky } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { ReactNode } from "react";
 import { Terrain } from '../../vendor/THREE.Terrain.mjs'
@@ -17,6 +17,7 @@ export function ThreeScene({ children }: ThreeSceneProps) {
     >
       <Environment preset="park" />
       <Sky />
+      <OrbitControls />
       {children}
     </Canvas>
   )
