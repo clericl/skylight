@@ -1,9 +1,12 @@
 import { ClockWidget } from './components/clock-widget'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThreeScene } from './components/three-scene'
+import { WeatherWidget } from './components/weather-widget'
 import { styled } from '@mui/material'
 
 import './App.css'
-import { Center } from '@react-three/drei'
+
+const queryClient = new QueryClient()
 
 const Container = styled('main')`
   height: 100vh;
@@ -18,11 +21,13 @@ const Container = styled('main')`
 
 function App() {
   return (
-    <Container>
-      <ThreeScene>
+    <QueryClientProvider client={queryClient}>
+      <Container>
+        <ThreeScene></ThreeScene>
         <ClockWidget />
-      </ThreeScene>
-    </Container>
+        <WeatherWidget />
+      </Container>
+    </QueryClientProvider>
   )
 }
 

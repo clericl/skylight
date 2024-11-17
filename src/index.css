@@ -5,6 +5,13 @@
     url('./assets/RobotoMono.ttf');
 }
 
+@font-face{
+  font-family: "Lato";
+  src: 
+    local("Lato"),
+    url('./assets/Lato.ttf');
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

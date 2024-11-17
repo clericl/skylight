@@ -1,19 +1,34 @@
-import * as THREE from 'three'
-import { Suspense, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { DateTime } from 'luxon'
 import { useInterval } from "usehooks-ts";
-import { Center, OnCenterCallbackProps, Text3D } from '@react-three/drei';
+import { Stack, Typography, styled } from '@mui/material';
 
-import robotoFont from '../../assets/Roboto Mono_Regular.json?url'
-import sourceCodeFont from '../../assets/Source Code Pro_Regular.json?url'
-import { useFrame, useThree } from '@react-three/fiber';
+const ClockWidgetContainer = styled(Stack)`
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24vw;
+`
+
+const StyledTypography = styled(Typography)`
+  font-size: inherit;
+  font-family: Roboto Mono, monospace;
+`
+
+const HMText = styled(StyledTypography)`
+  margin-right: 0.15em;
+`
+
+const SubText = styled(StyledTypography)`
+  font-size: 0.4em;
+  line-height: 1;
+`
 
 export function ClockWidget() {
   const [hm, setHM] = useState('')
   const [second, setSecond] = useState('')
   const [period, setPeriod] = useState('')
-  const [x, setX] = useState(0)
-  const [y, setY] = useState(0)
 
   useInterval(() => {
     const dt = DateTime.now()
@@ -23,37 +38,17 @@ export function ClockWidget() {
     setPeriod(dt.toFormat('a'))
   }, 100)
 
-  const ref = useRef(null)
-  const hmRef = useRef(null)
-
-  useFrame(() => {
-    if (hmRef.current) {
-      console.log(hmRef.current)
-    }
-  })
-
   return (
-    <Suspense fallback={null}>
-      <Center ref={ref}>
-        <group ref={hmRef}>
-            <Text3D font={sourceCodeFont} size={10}>
-              {hm}
-              <meshStandardMaterial color="red" />
-            </Text3D>
-            <Center top right>
-              <Text3D font={sourceCodeFont} size={5}>
-                {second}
-                <meshStandardMaterial color="red" />
-              </Text3D>
-            </Center>
-            <Center bottom right>
-              <Text3D font={sourceCodeFont} size={5}>
-                {period}
-                <meshStandardMaterial color="red" />
-              </Text3D>
-            </Center>
-        </group>
-      </Center>
-    </Suspense>
+    <ClockWidgetContainer direction="row">
+      <HMText>{hm}</HMText>
+      <Stack justifyContent="center">
+        <SubText>
+          {second}
+        </SubText>
+        <SubText>
+          {period}
+        </SubText>
+      </Stack>
+    </ClockWidgetContainer>
   )
 }

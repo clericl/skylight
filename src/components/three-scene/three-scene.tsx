@@ -1,24 +1,28 @@
-import { Environment, OrbitControls, Sky } from "@react-three/drei";
+import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { ReactNode } from "react";
-import { Terrain } from '../../vendor/THREE.Terrain.mjs'
+import { Sky } from "../sky";
+import { Terrain } from "../terrain";
+import type { ReactNode } from "react";
 
 type ThreeSceneProps = {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export function ThreeScene({ children }: ThreeSceneProps) {
+
   return (
     <Canvas
       camera={{
-        position: [0, 0, 20],
+        position: [0, 100, -100],
         fov: 80,
       }}
     >
       <Environment preset="park" />
+      <ambientLight intensity={0.5} />
       <Sky />
-      <OrbitControls />
+      {/* <Terrain /> */}
       {children}
+      <OrbitControls />
     </Canvas>
   )
 }
