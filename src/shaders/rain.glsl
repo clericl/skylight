@@ -1,3 +1,7 @@
+// Heartfelt - by Martijn Steinrucken aka BigWings - 2017
+// Email:countfrolic@gmail.com Twitter:@The_ArtOfCode
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
 #define S(a, b, t) smoothstep(a, b, t)
 #define USE_POST_PROCESSING
 
@@ -96,12 +100,18 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
 	vec2 uv = (fragCoord.xy-.5*iResolution.xy) / iResolution.y;
     vec2 UV = fragCoord.xy/iResolution.xy;
-    vec3 M = iMouse.xyz/iResolution.xyz;
+    vec3 M = vec3(0, 0, 0);
     float T = iTime+M.x*2.;
+    
+    #ifdef HAS_HEART
+    T = mod(iTime, 102.);
+    T = mix(T, M.x*102., M.z>0.?1.:0.);
+    #endif
+    
     
     float t = T*.2;
     
-    float rainAmount = 1.0;
+    float rainAmount = sin(T*.05)*.3+.7;
     
     float maxBlur = mix(3., 6., rainAmount);
     float minBlur = 2.;
@@ -120,22 +130,18 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     
     vec2 c = Drops(uv, t, staticDrops, layer1, layer2);
-   #ifdef CHEAP_NORMALS
-    	vec2 n = vec2(dFdx(c.x), dFdy(c.x));// cheap normals (3x cheaper, but 2 times shittier ;))
-    #else
-    	vec2 e = vec2(.001, 0.);
-    	float cx = Drops(uv+e, t, staticDrops, layer1, layer2).x;
-    	float cy = Drops(uv+e.yx, t, staticDrops, layer1, layer2).x;
-    	vec2 n = vec2(cx-c.x, cy-c.x);		// expensive normals
-    #endif
-    
+    vec2 e = vec2(.001, 0.);
+    float cx = Drops(uv+e, t, staticDrops, layer1, layer2).x;
+    float cy = Drops(uv+e.yx, t, staticDrops, layer1, layer2).x;
+    vec2 n = vec2(cx-c.x, cy-c.x);		// expensive normals
+        
     float focus = mix(maxBlur-c.y, minBlur, S(.1, .2, c.x));
     vec3 col = textureLod(iChannel0, UV+n, focus).rgb;
     
     
     #ifdef USE_POST_PROCESSING
     t = (T+3.)*.5;										// make time sync with first lightnoing
-    float colFade = .5+.5+story;
+    float colFade = sin(t*.2)*.5+.5+story;
     col *= mix(vec3(1.), vec3(.8, .9, 1.3), colFade);	// subtle color shift
     float fade = S(0., 10., T);							// fade in at the start
     float lightning = sin(t*sin(t*10.));				// lighting flicker
@@ -146,5 +152,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     col *= fade;										// composite start and end fade
     #endif
     
+    //col = vec3(heart);
     fragColor = vec4(col, 1.);
 }
