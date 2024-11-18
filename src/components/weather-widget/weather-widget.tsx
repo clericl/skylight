@@ -7,7 +7,7 @@ import { UNITS } from '../../constants';
 
 const WeatherWidgetContainer = styled(Stack)`
   position: absolute;
-  bottom: 20%;
+  bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
   font-size: 5em;
