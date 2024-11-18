@@ -164,11 +164,6 @@ export class RainMaterial extends THREE.ShaderMaterial {
           float focus = mix(maxBlur-c.y, minBlur, smoothstep(.1, .2, c.x));
           vec3 col = textureLod(iChannel0, UV+n, focus).rgb;
           
-          t = (T+3.)*.5;										// make time sync with first lightnoing
-          float lightning = sin(t*sin(t*10.));				// lighting flicker
-          lightning *= pow(max(0., sin(t+sin(t))), 10.);		// lightning flash
-          col *= 1.+lightning*mix(1., .1, story*story);	// composite lightning
-          
           fragColor = vec4(col, .8/focus+.1);
         }
 
