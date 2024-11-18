@@ -9,13 +9,26 @@ const ClockWidgetContainer = styled(Stack)`
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 24vw;
+  
+  background: linear-gradient(270deg, #ff00ff, #00ff00, #00ffff);
+  background-size: 600% 600%;
+  animation: fancy-gradient 19s ease infinite;
+  
+  @keyframes fancy-gradient {
+    0%{background-position:0% 25%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 75%}
+  }
+  
+  background-clip: text;
 `
-
-const StyledTypography = styled(Typography)`
+  
+  const StyledTypography = styled(Typography)`
   font-size: inherit;
   font-family: Roboto Mono, monospace;
+  color: rgb(0 0 0 / 20%);
 `
-
+  
 const HMText = styled(StyledTypography)`
   margin-right: 0.15em;
 `

@@ -12,7 +12,7 @@ export function ThreeScene({ children }: ThreeSceneProps) {
   return (
     <Canvas
       camera={{
-        position: [0, 500, -1000],
+        position: [0, 10, -10],
         fov: 80,
       }}
     >

@@ -23,7 +23,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Container>
-        <ThreeScene></ThreeScene>
+        <ThreeScene />
         <ClockWidget />
         <WeatherWidget />
       </Container>

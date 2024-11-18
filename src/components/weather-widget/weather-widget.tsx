@@ -11,6 +11,18 @@ const WeatherWidgetContainer = styled(Stack)`
   left: 50%;
   transform: translateX(-50%);
   font-size: 5em;
+
+  background: linear-gradient(270deg, #ff00ff, #00ffff);
+  background-size: 400% 400%;
+  animation: fancy-gradient 19s ease infinite;
+  
+  @keyframes fancy-gradient {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+  
+  background-clip: text;
 `
 
 const DetailTypography = styled(Typography)`
@@ -20,6 +32,7 @@ const DetailTypography = styled(Typography)`
   display: flex;
   align-items: center;
   column-gap: 0.25em;
+  color: rgb(0 0 0 / 0%);
 `
 
 export function WeatherWidget() {
