@@ -1,4 +1,4 @@
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Sky } from "../sky";
 import { Rain } from "../rain";
@@ -9,11 +9,10 @@ type ThreeSceneProps = {
 }
 
 export function ThreeScene({ children }: ThreeSceneProps) {
-
   return (
     <Canvas
       camera={{
-        position: [0, 10, -10],
+        position: [0, 500, -1000],
         fov: 80,
       }}
     >
@@ -22,7 +21,6 @@ export function ThreeScene({ children }: ThreeSceneProps) {
       <Sky />
       {children}
       <Rain />
-      <OrbitControls />
     </Canvas>
   )
 }

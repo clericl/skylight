@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { weatherQueryKey } from "../constants/";
-import { useEffect, useState } from "react";
-import { geolocate } from "../utils";
+import { useLocation } from "./use-location";
+import type { Point } from "../types";
 
 const BASE_URL = 'https://api.weather.gov/points/'
 
@@ -9,16 +9,9 @@ function constructUrl(latitude: number, longitude: number) {
   return BASE_URL + latitude + ',' + longitude
 }
 
-async function getForecastUrl() {
-  if (!navigator.geolocation) {
-    console.warn('Geolocation was unsuccessful')
-
-    return null
-  }
-
+async function getForecastUrl(position: Point) {
   try {
-    const position = await geolocate()
-    const res = await fetch(constructUrl(position.coords.latitude, position.coords.longitude))
+    const res = await fetch(constructUrl(position.latitude, position.longitude))
     const data = await res.json()
 
     return data?.properties?.forecast
@@ -29,12 +22,8 @@ async function getForecastUrl() {
   }
 }
 
-async function getWeather(forecastUrl: string) {
-  if (!navigator.geolocation || !forecastUrl) {
-    console.warn('Geolocation was unsuccessful')
-
-    return null
-  }
+async function getWeather(location: Point) {
+  const forecastUrl = await getForecastUrl(location)
 
   try {
     const res = await fetch(forecastUrl)
@@ -43,29 +32,21 @@ async function getWeather(forecastUrl: string) {
     return data?.properties?.periods?.[0]
   } catch (err) {
     console.warn(err)
-
-    return null
   }
+
+  return null
 }
 
 export function useWeather() {
-  const [forecastUrl, setForecastUrl] = useState('')
-
-  useEffect(() => {
-    const fetchUrl = async () => {
-      const url = await getForecastUrl()
-
-      if (url) {
-        setForecastUrl(url)
-      }
-    }
-
-    fetchUrl()
-  }, [])
+  const location = useLocation()
 
   return useQuery({
-    queryKey: weatherQueryKey,
-    queryFn: () => getWeather(forecastUrl),
+    queryKey: [
+      ...weatherQueryKey,
+      location.data,
+    ],
+    queryFn: () => getWeather(location.data!),
     refetchInterval: 1000,
+    enabled: !!location.data,
   })
 }

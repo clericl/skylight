@@ -3,16 +3,15 @@ import { useFrame } from "@react-three/fiber";
 import { useLayoutEffect, useRef, useState } from "react";
 import { RainMaterial } from "../../materials";
 import { Billboard, ScreenSizer, useTexture } from '@react-three/drei';
+import { useWeather } from '../../hooks';
 import blueTex from '../../assets/blue.jpg'
-
-const data = new Uint8Array([200, 0, 0, 0])
-const blankTex = new THREE.DataTexture(data, 1, 1, THREE.RGBAFormat)
-blankTex.needsUpdate = true
 
 export function Rain() {
   const [rainMaterial] = useState(new RainMaterial())
   const ref = useRef<THREE.Mesh>(null!)
   const tex = useTexture(blueTex)
+  const weather = useWeather()
+  const isRaining = (weather.data?.probabilityOfPrecipitation.value ?? 0) > 50
 
   useFrame((state) => {
     (ref.current.material as RainMaterial).uniforms.iTime.value = state.clock.elapsedTime
@@ -23,7 +22,7 @@ export function Rain() {
     (ref.current.material as RainMaterial).uniforms.iChannel0.value = tex;
   }, [tex])
 
-  return (
+  return isRaining ? (
     <ScreenSizer>
       <Billboard>
         <mesh ref={ref}>
@@ -32,5 +31,5 @@ export function Rain() {
         </mesh>
       </Billboard>
     </ScreenSizer>
-  )
+  ) : null
 }
