@@ -8,18 +8,22 @@ import blueTex from '../../assets/blue.jpg'
 
 export function Rain() {
   const [rainMaterial] = useState(new RainMaterial())
-  const ref = useRef<THREE.Mesh>(null!)
+  const ref = useRef<THREE.Mesh>(null)
   const tex = useTexture(blueTex)
   const weather = useWeather()
   const isRaining = (weather.data?.probabilityOfPrecipitation.value ?? 0) > 50
 
   useFrame((state) => {
-    (ref.current.material as RainMaterial).uniforms.iTime.value = state.clock.elapsedTime
+    if (ref.current) {
+      (ref.current.material as RainMaterial).uniforms.iTime.value = state.clock.elapsedTime
+    }
   })
 
   useLayoutEffect(() => {
-    (ref.current.material as RainMaterial).uniforms.iResolution.value = new THREE.Vector2(document.body.clientWidth, document.body.clientHeight);
-    (ref.current.material as RainMaterial).uniforms.iChannel0.value = tex;
+    if (ref.current) {
+      (ref.current.material as RainMaterial).uniforms.iResolution.value = new THREE.Vector2(document.body.clientWidth, document.body.clientHeight);
+      (ref.current.material as RainMaterial).uniforms.iChannel0.value = tex;
+    }
   }, [tex])
 
   return isRaining ? (
