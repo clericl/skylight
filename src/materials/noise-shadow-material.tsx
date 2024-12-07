@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { extend, MaterialNode } from '@react-three/fiber'
 
-export class NoiseMaterial extends THREE.ShaderMaterial {
+export class NoiseShadowMaterial extends THREE.ShaderMaterial {
   constructor() {
     super({
       uniforms: {
@@ -128,19 +128,19 @@ export class NoiseMaterial extends THREE.ShaderMaterial {
         void main() {
           vec2 st = gl_FragCoord.xy / u_resolution;
 
-          gl_FragColor = vec4(vec3(st.x, st.y, 1.0), 1.0);
+          gl_FragColor = vec4(vec3(0.0, 0.0, 0.0), 0.8);
         }
       `,
-      wireframe: true,
+      // wireframe: true,
       side: THREE.DoubleSide,
     })
   }
 }
 
-extend({ NoiseMaterial })
+extend({ NoiseShadowMaterial })
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
-    noiseMaterial: MaterialNode<NoiseMaterial, []>,
+    noiseShadowMaterial: MaterialNode<NoiseShadowMaterial, []>,
   }
 }

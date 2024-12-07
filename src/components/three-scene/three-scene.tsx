@@ -10,14 +10,19 @@ export function ThreeScene({ children }: ThreeSceneProps) {
   return (
     <Canvas
       shadows
-      camera={{ position: [12, 8, -10], fov: 50 }}
+      camera={{ position: [8, 6, -6], fov: 45 }}
     >
       <fog attach="fog" args={["white", 0, 40]} />
       <color attach="background" args={['#c6e5db']} />
-      <Environment preset="studio" />
-      <AccumulativeShadows temporal frames={100} scale={60} position={[0, -3, 0]} color="lightblue">
-        <RandomizedLight amount={8} ambient={0.5} intensity={3} position={[0, 25, 1]} size={20} radius={4} />
+      <AccumulativeShadows
+        temporal
+        frames={100}
+        color="lightblue"
+        position={[0, -1, 0]}
+      >
+        <RandomizedLight castShadow amount={8} radius={3} ambient={0.8} position={[0, 5, 0]} />
       </AccumulativeShadows>
+      <Environment preset="city" />
       {children}
       <OrbitControls />
     </Canvas>
