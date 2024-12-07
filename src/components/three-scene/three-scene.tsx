@@ -7,7 +7,6 @@ type ThreeSceneProps = {
 }
 
 export function ThreeScene({ children }: ThreeSceneProps) {
-
   return (
     <Canvas
       shadows

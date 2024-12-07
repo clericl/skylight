@@ -1,29 +1,22 @@
-import SunCalc, { GetSunPositionResult } from 'suncalc'
-import { geolocate } from "../../utils";
 import { useInterval } from "usehooks-ts";
-import { degToRad } from "three/src/math/MathUtils.js";
 import { useState } from 'react';
 import { Sky as DreiSky } from '@react-three/drei';
+import { useLocation } from '../../hooks';
+import * as THREE from 'three'
+import { calcSunPosition } from '../../utils';
 
 export function Sky() {
-  const [localPosition, setLocalPosition] = useState<GeolocationPosition | null>(null)
-  const [sunPosition, setSunPosition] = useState<GetSunPositionResult | null>(null)
-
-  const azimuthRad = sunPosition?.azimuth ? degToRad(sunPosition.azimuth) : undefined
+  const [sunPosition, setSunPosition] = useState<THREE.Vector3>(calcSunPosition())
+  
+  const location = useLocation()
 
   useInterval(async () => {
-    if (!localPosition) {
-      const location = await geolocate()
+    const newPosition = calcSunPosition(location.data)
 
-      setLocalPosition(location)
-    } else {
-      const newPosition = SunCalc.getPosition(new Date(), localPosition.coords.latitude, localPosition.coords.longitude)
-  
-      setSunPosition(newPosition)
-    }
+    setSunPosition(newPosition)
   }, 1000)
 
   return (
-    <DreiSky azimuth={azimuthRad} inclination={sunPosition?.altitude} />
+    <DreiSky sunPosition={sunPosition} />
   )
 }
