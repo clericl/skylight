@@ -10,14 +10,14 @@ const ClockWidgetContainer = styled(Stack)`
   transform: translate(-50%, -50%);
   font-size: 24vw;
   
-  background: linear-gradient(270deg, #ff00ff, #00ff00, #00ffff);
-  background-size: 600% 600%;
-  animation: fancy-gradient 19s ease infinite;
+  background: linear-gradient(270deg, #ff00ff, #ffffff, #00ffff, #000000);
+  background-size: 800% 800%;
+  animation: fancy-gradient 30s ease infinite;
   
   @keyframes fancy-gradient {
-    0%{background-position:0% 25%}
+    0%{background-position:0% 50%}
     50%{background-position:100% 50%}
-    100%{background-position:0% 75%}
+    100%{background-position:0% 50%}
   }
   
   background-clip: text;

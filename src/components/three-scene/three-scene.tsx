@@ -17,7 +17,7 @@ export function ThreeScene({ children }: ThreeSceneProps) {
       }}
     >
       <Environment preset="park" />
-      <ambientLight intensity={0.5} />
+      {/* <ambientLight intensity={0.5} /> */}
       <Sky />
       {children}
       <Rain />

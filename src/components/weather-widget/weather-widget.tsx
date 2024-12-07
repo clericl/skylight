@@ -32,7 +32,7 @@ const DetailTypography = styled(Typography)`
   display: flex;
   align-items: center;
   column-gap: 0.25em;
-  color: rgb(0 0 0 / 0%);
+  color: rgb(0 0 0 / 20%);
 `
 
 export function WeatherWidget() {
