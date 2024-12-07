@@ -1,4 +1,5 @@
 import { ClockWidget } from './components/clock-widget'
+import { Cloth } from './components/cloth'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThreeScene } from './components/three-scene'
 import { WeatherWidget } from './components/weather-widget'
@@ -23,7 +24,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Container>
-        <ThreeScene></ThreeScene>
+        <ThreeScene>
+          <Cloth />
+        </ThreeScene>
         <ClockWidget />
         <WeatherWidget />
       </Container>
