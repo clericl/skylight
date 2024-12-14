@@ -1,7 +1,8 @@
+import { processGridpointData } from "../utils";
+import { useLocation } from "./use-location";
 import { useQuery } from "@tanstack/react-query";
 import { weatherQueryKey } from "../constants/";
-import { useLocation } from "./use-location";
-import type { Point } from "../types";
+import type { Point, ProcessedGridpointData } from "../types";
 
 const BASE_URL = 'https://api.weather.gov/points/'
 
@@ -14,7 +15,9 @@ async function getForecastUrl(position: Point) {
     const res = await fetch(constructUrl(position.latitude, position.longitude))
     const data = await res.json()
 
-    return data?.properties?.forecast
+    console.log(data)
+
+    return data?.properties?.forecastGridData
   } catch (err) {
     console.warn(err)
 
@@ -22,14 +25,16 @@ async function getForecastUrl(position: Point) {
   }
 }
 
-async function getWeather(location: Point) {
+async function getWeather(location: Point): Promise<ProcessedGridpointData | null> {
   const forecastUrl = await getForecastUrl(location)
 
   try {
     const res = await fetch(forecastUrl)
     const data = await res.json()
 
-    return data?.properties?.periods?.[0]
+    const raw = data?.properties?.weather?.values?.[1]?.value?.[0]
+
+    return processGridpointData(raw)
   } catch (err) {
     console.warn(err)
   }
