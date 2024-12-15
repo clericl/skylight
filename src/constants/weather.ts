@@ -10,5 +10,8 @@ export const WEATHER_COVERAGE: Partial<Record<Exclude<Weather["coverage"], null>
 }
 
 export const WEATHER_INTENSITY: Partial<Record<Exclude<Weather["intensity"], null>, string>> = {
-  "very_light": "very light",
+  "very_light": "",
+  "heavy": "heavy",
+  "light": "",
+  "moderate": "",
 }

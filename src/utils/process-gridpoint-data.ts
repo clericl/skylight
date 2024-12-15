@@ -8,8 +8,8 @@ export function processGridpointData(gridpoint: Gridpoint): ProcessedGridpointDa
   const weatherCoverage = gridpoint.weather?.values[1].value[0].coverage
   const weatherIntensity = gridpoint.weather?.values[1].value[0].intensity
 
-  if (temperatureUnit === 'c' && typeof temperature === 'number') {
-    temperature = (temperature * 9 / 5) + 32
+  if (temperatureUnit === 'wmoUnit:degC' && typeof temperature === 'number') {
+    temperature = Math.round((temperature * 9 / 5) + 32)
     temperatureUnit = 'f'
   }
 

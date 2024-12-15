@@ -5,7 +5,7 @@ export function stringifyWeather(weather: Weather): string | null {
   let returnString = ''
 
   if (weather.coverage) {
-    const stringifiedCoverage = WEATHER_COVERAGE[weather.coverage] || weather.coverage
+    const stringifiedCoverage = WEATHER_COVERAGE[weather.coverage] ?? weather.coverage
 
     if (stringifiedCoverage) {
       returnString += (stringifiedCoverage + ' ')
@@ -13,7 +13,7 @@ export function stringifyWeather(weather: Weather): string | null {
   }
 
   if (weather.intensity) {
-    const stringifiedIntensity = WEATHER_INTENSITY[weather.intensity] || weather.intensity
+    const stringifiedIntensity = WEATHER_INTENSITY[weather.intensity] ?? weather.intensity
 
     if (stringifiedIntensity) {
       returnString += (stringifiedIntensity + ' ')

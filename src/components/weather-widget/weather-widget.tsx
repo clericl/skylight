@@ -1,5 +1,7 @@
 import { Stack, Typography, styled } from "@mui/material"
 import { useWeather } from "../../hooks"
+import { useMemo } from "react"
+import { stringifyWeather } from "../../utils"
 
 const WeatherWidgetContainer = styled(Stack)`
   position: absolute;
@@ -34,13 +36,21 @@ const DetailTypography = styled(Typography)`
 export function WeatherWidget() {
   const weather = useWeather()
 
+  const stringified = useMemo(() => {
+    if (weather.data) {
+      return stringifyWeather(weather.data.weather)
+    }
+
+    return null
+  }, [weather.data])
+
   return weather.data ? (
     <WeatherWidgetContainer>
       <DetailTypography>
         {weather.data.temperature.value}°{weather.data.temperature.unit}
       </DetailTypography>
       <DetailTypography>
-        
+        {stringified}
       </DetailTypography>
     </WeatherWidgetContainer>
   ) : null

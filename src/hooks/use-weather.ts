@@ -15,8 +15,6 @@ async function getForecastUrl(position: Point) {
     const res = await fetch(constructUrl(position.latitude, position.longitude))
     const data = await res.json()
 
-    console.log(data)
-
     return data?.properties?.forecastGridData
   } catch (err) {
     console.warn(err)
@@ -32,9 +30,7 @@ async function getWeather(location: Point): Promise<ProcessedGridpointData | nul
     const res = await fetch(forecastUrl)
     const data = await res.json()
 
-    const raw = data?.properties?.weather?.values?.[1]?.value?.[0]
-
-    return processGridpointData(raw)
+    return processGridpointData(data.properties)
   } catch (err) {
     console.warn(err)
   }

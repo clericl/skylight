@@ -27,5 +27,6 @@ export function useLocation() {
   return useQuery({
     queryKey: locationQueryKey,
     queryFn: getLocation,
+    initialData: DEFAULT_COORDINATES,
   })
 }
