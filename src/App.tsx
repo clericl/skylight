@@ -24,8 +24,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Container>
         <ThreeScene />
-        <ClockWidget />
-        <WeatherWidget />
+        {/* <ClockWidget />
+        <WeatherWidget /> */}
       </Container>
     </QueryClientProvider>
   )

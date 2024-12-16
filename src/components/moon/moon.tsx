@@ -12,7 +12,7 @@ export function Moon() {
   const location = useLocation()
 
   useFrame(() => {
-    const date = new Date()
+    const date = new Date(2024, 11, 15, 23, 47)
     const place = location.data
     
     const angles = SunCalc.getMoonPosition(date, place.latitude, place.longitude)
@@ -46,7 +46,7 @@ export function Moon() {
     <group>
       <mesh position={[0, 0, 0]} castShadow ref={earthRef}>
         <sphereGeometry args={[MOON_SIZE * 1.3]} />
-        <meshStandardMaterial color="green" transparent opacity={0} />
+        <meshStandardMaterial color="green" transparent opacity={1} />
       </mesh>
       <group ref={moonRef}>
         <mesh receiveShadow>

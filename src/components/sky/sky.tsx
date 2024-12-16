@@ -13,7 +13,7 @@ const sunPositionVec = new THREE.Vector3()
 export function Sky() {
   const sunRef = useRef<THREE.Group>(null)
   const skyRef = useRef<THREE.Mesh<SkyGeometry, THREE.ShaderMaterial>>(null)
-  const nightRef = useRef<THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>>(null)
+  const nightRef = useRef<THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>>(null)
   
   const location = useLocation()
   
@@ -38,6 +38,10 @@ export function Sky() {
       if (nightRef.current) {
         nightRef.current.material.opacity = -sunPositionVec.y * 2
       }
+
+      // const bbox = new THREE.Box3()
+      // bbox.setFromObject(skyRef.current)
+      // console.log(bbox)
     }
   })
 
@@ -45,16 +49,8 @@ export function Sky() {
     <group>
       <DreiSky ref={skyRef} />
       <Suspense fallback={null}>
-        <CelestialSphere />
+        <CelestialSphere ref={nightRef} />
       </Suspense>
-      <mesh position={[0, 0, 0]} ref={nightRef}>
-        <sphereGeometry args={[2]} />
-        <meshBasicMaterial
-          color={new THREE.Color(0x010021)}
-          side={THREE.DoubleSide}
-          transparent
-        />
-      </mesh>
       <Moon />
     </group>
   )

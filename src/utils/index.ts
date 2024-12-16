@@ -1,4 +1,5 @@
 export { calcSunPosition } from './calc-sun-position'
+export { generateStarfield } from './generate-starfield'
 export { geolocate } from './geolocate'
 export { processGridpointData } from './process-gridpoint-data'
 export { stringifyWeather } from './stringify-weather'
