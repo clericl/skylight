@@ -138,9 +138,3 @@ export class NoiseShadowMaterial extends THREE.ShaderMaterial {
 }
 
 extend({ NoiseShadowMaterial })
-
-declare module '@react-three/fiber' {
-  interface ThreeElements {
-    noiseShadowMaterial: MaterialNode<NoiseShadowMaterial, []>,
-  }
-}

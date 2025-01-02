@@ -38,10 +38,6 @@ export function Sky() {
       if (nightRef.current) {
         nightRef.current.material.opacity = -sunPositionVec.y * 2
       }
-
-      // const bbox = new THREE.Box3()
-      // bbox.setFromObject(skyRef.current)
-      // console.log(bbox)
     }
   })
 
@@ -49,7 +45,7 @@ export function Sky() {
     <group>
       <DreiSky ref={skyRef} />
       <Suspense fallback={null}>
-        <CelestialSphere ref={nightRef} />
+        <CelestialSphere />
       </Suspense>
       <Moon />
     </group>

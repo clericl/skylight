@@ -1,4 +1,4 @@
-import { extend, type MaterialNode } from '@react-three/fiber'
+import { extend } from '@react-three/fiber'
 import * as THREE from 'three'
 
 export class RainMaterial extends THREE.ShaderMaterial {
@@ -178,9 +178,3 @@ export class RainMaterial extends THREE.ShaderMaterial {
 }
 
 extend({ RainMaterial })
-
-declare module '@react-three/fiber' {
-  interface ThreeElements {
-    rainMaterial: MaterialNode<RainMaterial, []>,
-  }
-}

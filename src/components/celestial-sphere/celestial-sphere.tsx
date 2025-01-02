@@ -1,25 +1,19 @@
-import starMap from '../../assets/hiptyc_2020_4k.exr?url'
 import constellationMap from '../../assets/constellation_figures_8k.tif?url'
 import * as THREE from 'three'
-import { EXRLoader, TIFFLoader } from "three/examples/jsm/Addons.js"
+import { TIFFLoader } from "three/examples/jsm/Addons.js"
 import { useFrame, useLoader } from "@react-three/fiber"
-import { RefObject, useCallback, useRef, useState } from 'react'
-import { generateStarfield } from '../../utils'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { generateStarfield, getLmst } from '../../utils'
+import { DEFAULT_COORDINATES } from '../../constants'
+import { degToRad } from 'three/src/math/MathUtils.js'
 
-type CelestialSphereProps = {
-  ref?: RefObject<THREE.Mesh | null>;
-}
+const nightColor = new THREE.Color().setRGB(0.001, 0.0, 0.01)
 
-export function CelestialSphere({ ref }: CelestialSphereProps) {
+export function CelestialSphere() {
   const [starfieldMesh] = useState(generateStarfield())
-  const tex = useLoader(EXRLoader, starMap)
-  const constellations = useLoader(TIFFLoader, constellationMap)
+  // const tex = useLoader(TIFFLoader, constellationMap)
   const showRef = useRef(true)
   const constellationRef = useRef<THREE.Mesh>(null)
-
-  const handleClick = useCallback(() => {
-    showRef.current = !showRef.current
-  }, [])
   
   useFrame(() => {
     if (constellationRef.current) {
@@ -27,20 +21,23 @@ export function CelestialSphere({ ref }: CelestialSphereProps) {
     }
   })
 
+  // const handleClick = useCallback(() => {
+  //   showRef.current = !showRef.current
+  // }, [])
+
   return (
     <group>
       <primitive object={starfieldMesh} />
-      {/* <mesh ref={ref}>
+      <mesh>
         <sphereGeometry args={[2]} />
-        <meshBasicMaterial map={tex} side={THREE.BackSide} transparent />
+        <meshBasicMaterial color={nightColor} side={THREE.BackSide} transparent />
       </mesh>
-      <mesh ref={constellationRef} onClick={handleClick}>
-        <sphereGeometry args={[1.99]} />
+      {/* <mesh ref={constellationRef} onClick={handleClick}>
         <meshBasicMaterial
-          map={constellations}
-          alphaMap={constellations}
+          map={tex}
           side={THREE.BackSide}
           transparent
+          opacity={0.2}
         />
       </mesh> */}
     </group>
