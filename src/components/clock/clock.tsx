@@ -13,8 +13,8 @@ const ClockContainer = styled(Stack)`
   
   const StyledTypography = styled(Typography)`
   font-size: inherit;
-  font-family: Roboto Mono, monospace;
-  font-weight: 200;
+  font-family: Geist Mono, monospace;
+  font-weight: 100;
   line-height: 1;
 `
   

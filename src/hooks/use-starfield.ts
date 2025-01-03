@@ -5,7 +5,8 @@ import type { Point, Star } from '../types'
 import { calcStarColor, calcStarPosition } from '../utils'
 import { getLmst } from '../utils/get-lmst'
 import { DEFAULT_COORDINATES } from '../constants'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
+import { useInterval } from 'usehooks-ts'
 
 const data = d3.csvParse(starfieldCsv) as Star[]
 const calcMatrix = new THREE.Matrix4()
@@ -18,7 +19,7 @@ const starfieldMesh = new THREE.InstancedMesh(
 )
 
 export function useStarfield(localPosition: Point = DEFAULT_COORDINATES) {
-  const mesh = useMemo(() => {
+  const updateStarfield = useCallback(() => {
     const lmst = getLmst(localPosition)
   
     for (let i = 0; i < data.length; i++) {
@@ -30,9 +31,15 @@ export function useStarfield(localPosition: Point = DEFAULT_COORDINATES) {
       starfieldMesh.setMatrixAt(i, calcMatrix)
       starfieldMesh.setColorAt(i, calcStarColor(datum))
     }
+  }, [localPosition])
+
+  const mesh = useMemo(() => {
+    updateStarfield()
   
     return starfieldMesh
-  }, [localPosition])
+  }, [updateStarfield])
+
+  useInterval(updateStarfield, 1000)
 
   return {
     mesh,

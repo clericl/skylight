@@ -1,8 +1,8 @@
 @font-face{
-  font-family: "Roboto Mono";
+  font-family: "Geist Mono";
   src: 
-    local("RobotoMono"),
-    url('./assets/RobotoMono.ttf');
+    local("GeistMono"),
+    url('./assets/GeistMono.ttf');
 }
 
 @font-face{

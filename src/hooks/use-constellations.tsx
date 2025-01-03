@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { calcStarPosition } from "../utils/calc-star-position";
 import { getLmst } from "../utils/get-lmst";
 import { Line2, LineGeometry, LineMaterial } from "three/examples/jsm/Addons.js";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Text } from "@react-three/drei";
 import { calcStarColor } from "../utils";
 
@@ -21,6 +21,31 @@ export function useConstellations(constellationList: Constellation[], localPosit
     constellationList.reduce((acc: number, el: Constellation) => acc += el.lines.flat().length, 0)
   ))
 
+  const updateItems = useCallback(() => {
+    const lmst = getLmst(localPosition)
+
+    let starCount = 0
+
+    for (const constellation of constellationList) {
+      for (const line of constellation.lines) {
+        const positions = []
+
+        for (let i = 0; i < line.length; i++) {
+          const vertexStar = line[i]
+  
+          const starPosition = calcStarPosition(vertexStar, lmst, localPosition)
+  
+          positions.push(starPosition.x, starPosition.y, starPosition.z)
+  
+          calcMatrix.setPosition(starPosition.x, starPosition.y, starPosition.z)
+          starfieldMesh.setMatrixAt(starCount, calcMatrix)
+          starfieldMesh.setColorAt(starCount, calcStarColor(vertexStar, 0.3))
+          starCount++
+        }
+      }
+    }
+  }, [constellationList, localPosition, starfieldMesh])
+
   const items = useMemo(() => {
     const lmst = getLmst(localPosition)
 
@@ -30,7 +55,6 @@ export function useConstellations(constellationList: Constellation[], localPosit
     let starCount = 0
 
     for (const constellation of constellationList) {
-
       const constellationGroup = new THREE.Group()
       constellationGroup.name = constellation.id
   
