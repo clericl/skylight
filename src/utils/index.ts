@@ -1,3 +1,5 @@
+export { calcStarColor } from './calc-star-color'
+export { calcStarPosition } from './calc-star-position'
 export { calcSunPosition } from './calc-sun-position'
 export { decimalToHms } from './decimal-to-hms'
 export { geolocate } from './geolocate'

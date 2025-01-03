@@ -1,5 +1,6 @@
 export type {
   AltAz,
+  Constellation,
   Gridpoint,
   HMS,
   Point,

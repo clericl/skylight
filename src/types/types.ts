@@ -76,3 +76,10 @@ export type AltAz = {
   altitude: number;
   azimuth: number;
 }
+
+export type Constellation = {
+  type: 'constellation' | 'asterism';
+  id: string;
+  label: string;
+  lines: Star[][];
+}
