@@ -1,45 +1,36 @@
-import constellationMap from '../../assets/constellation_figures_8k.tif?url'
 import * as THREE from 'three'
-import { TIFFLoader } from "three/examples/jsm/Addons.js"
-import { useFrame, useLoader } from "@react-three/fiber"
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { generateStarfield, getLmst } from '../../utils'
-import { DEFAULT_COORDINATES } from '../../constants'
-import { degToRad } from 'three/src/math/MathUtils.js'
+import { useFrame } from "@react-three/fiber"
+import { useRef } from 'react'
+import { useConstellations, useStarfield } from '../../hooks'
 
 const nightColor = new THREE.Color().setRGB(0.001, 0.0, 0.01)
+const unitVec = new THREE.Vector3()
 
 export function CelestialSphere() {
-  const [starfieldMesh] = useState(generateStarfield())
-  // const tex = useLoader(TIFFLoader, constellationMap)
-  const showRef = useRef(true)
-  const constellationRef = useRef<THREE.Mesh>(null)
+  const { mesh: starfieldMesh } = useStarfield()
+  const { mesh: constellationsMesh, labels } = useConstellations()
+  const labelsRef = useRef<THREE.Group>(null)
+  const needsToRotateRef = useRef(true)
   
   useFrame(() => {
-    if (constellationRef.current) {
-      constellationRef.current.visible = showRef.current
+    if (labelsRef.current && needsToRotateRef.current) {
+      labelsRef.current.children.forEach((child) => {
+        child.lookAt(unitVec)
+      })
     }
   })
-
-  // const handleClick = useCallback(() => {
-  //   showRef.current = !showRef.current
-  // }, [])
 
   return (
     <group>
       <primitive object={starfieldMesh} />
+      <primitive object={constellationsMesh} />
       <mesh>
         <sphereGeometry args={[2]} />
         <meshBasicMaterial color={nightColor} side={THREE.BackSide} transparent />
       </mesh>
-      {/* <mesh ref={constellationRef} onClick={handleClick}>
-        <meshBasicMaterial
-          map={tex}
-          side={THREE.BackSide}
-          transparent
-          opacity={0.2}
-        />
-      </mesh> */}
+      <group ref={labelsRef}>
+        {labels}
+      </group>
     </group>
   )
 }

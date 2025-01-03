@@ -1,9 +1,12 @@
 import * as dragon from "dragon-astronomy";
-import type { AltAz, Point, Star } from "../types";
+import * as THREE from 'three'
+import type { Point, Star } from "../types";
 import { decimalToHms } from "./decimal-to-hms";
 import { DEFAULT_COORDINATES } from "../constants";
 
-export function calcStarPosition(star: Star, lmst: number, localPosition: Point = DEFAULT_COORDINATES): AltAz {
+const calcVec = new THREE.Vector3()
+
+export function calcStarPosition(star: Star, lmst: number, localPosition: Point = DEFAULT_COORDINATES): THREE.Vector3 {
   const raHms = decimalToHms(Number(star.ra))
   const decHms = decimalToHms(Number(star.dec))
 
@@ -16,9 +19,11 @@ export function calcStarPosition(star: Star, lmst: number, localPosition: Point 
     raHms.s,
   )
 
-  return dragon.HorizontalCoordinate.fromEquatorialCoordinateDegree(
+  const { altitude, azimuth } = dragon.HorizontalCoordinate.fromEquatorialCoordinateDegree(
     eq,
     lmst,
     localPosition.latitude,
   )
+
+  return calcVec.setFromSphericalCoords(1, (Math.PI / 2) - altitude, azimuth)
 }

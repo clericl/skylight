@@ -20,11 +20,11 @@ export function Moon() {
     const theta = angles.azimuth
     
     if (moonRef.current) {
-      moonRef.current.position.setFromSphericalCoords(1, phi, theta)
+      moonRef.current.position.setFromSphericalCoords(1, (Math.PI / 2) - phi, theta)
     }
 
     if (umbraRef.current) {
-      umbraRef.current.position.setFromSphericalCoords(1, phi, theta)
+      umbraRef.current.position.setFromSphericalCoords(1, (Math.PI / 2) - phi, theta)
       umbraRef.current.position.negate()
     }
 

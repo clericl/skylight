@@ -1,6 +1,5 @@
 export { calcSunPosition } from './calc-sun-position'
 export { decimalToHms } from './decimal-to-hms'
-export { generateStarfield } from './generate-starfield'
 export { geolocate } from './geolocate'
 export { getLmst } from './get-lmst'
 export { processGridpointData } from './process-gridpoint-data'
