@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { useInterval } from "usehooks-ts";
 import { Stack, Typography, styled } from '@mui/material';
 
-const ClockWidgetContainer = styled(Stack)`
+const ClockContainer = styled(Stack)`
   position: absolute;
   top: 35%;
   left: 50%;
@@ -38,7 +38,7 @@ const SubText = styled(StyledTypography)`
   line-height: 1;
 `
 
-export function ClockWidget() {
+export function Clock() {
   const [hm, setHM] = useState('')
   const [second, setSecond] = useState('')
   const [period, setPeriod] = useState('')
@@ -52,7 +52,7 @@ export function ClockWidget() {
   }, 100)
 
   return (
-    <ClockWidgetContainer direction="row">
+    <ClockContainer direction="row">
       <HMText>{hm}</HMText>
       <Stack justifyContent="center">
         <SubText>
@@ -62,6 +62,6 @@ export function ClockWidget() {
           {period}
         </SubText>
       </Stack>
-    </ClockWidgetContainer>
+    </ClockContainer>
   )
 }

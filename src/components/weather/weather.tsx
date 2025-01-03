@@ -3,7 +3,7 @@ import { useWeather } from "../../hooks"
 import { useMemo } from "react"
 import { stringifyWeather } from "../../utils"
 
-const WeatherWidgetContainer = styled(Stack)`
+const WeatherContainer = styled(Stack)`
   position: absolute;
   bottom: 10%;
   left: 50%;
@@ -33,7 +33,7 @@ const DetailTypography = styled(Typography)`
   color: rgb(0 0 0 / 20%);
 `
 
-export function WeatherWidget() {
+export function Weather() {
   const weather = useWeather()
 
   const stringified = useMemo(() => {
@@ -45,13 +45,13 @@ export function WeatherWidget() {
   }, [weather.data])
 
   return weather.data ? (
-    <WeatherWidgetContainer>
+    <WeatherContainer>
       <DetailTypography>
         {weather.data.temperature.value}°{weather.data.temperature.unit}
       </DetailTypography>
       <DetailTypography>
         {stringified}
       </DetailTypography>
-    </WeatherWidgetContainer>
+    </WeatherContainer>
   ) : null
 }
