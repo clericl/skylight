@@ -5,28 +5,17 @@ import { Stack, Typography, styled } from '@mui/material';
 
 const ClockContainer = styled(Stack)`
   position: absolute;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 24vw;
-  
-  background: linear-gradient(270deg, #ff00ff, #ffffff, #00ffff, #000000);
-  background-size: 800% 800%;
-  animation: fancy-gradient 30s ease infinite;
-  
-  @keyframes fancy-gradient {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-  }
-  
-  background-clip: text;
-`
+  right: 2%;
+  bottom: 0;
+  font-size: 20vw;
+  color: white;
+  `
   
   const StyledTypography = styled(Typography)`
   font-size: inherit;
   font-family: Roboto Mono, monospace;
-  color: rgb(0 0 0 / 20%);
+  font-weight: 200;
+  line-height: 1;
 `
   
 const HMText = styled(StyledTypography)`
@@ -35,7 +24,6 @@ const HMText = styled(StyledTypography)`
 
 const SubText = styled(StyledTypography)`
   font-size: 0.4em;
-  line-height: 1;
 `
 
 export function Clock() {

@@ -1,7 +1,6 @@
-import { ClockWidget } from './components/clock'
+import { Clock } from './components/clock'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThreeScene } from './components/three-scene'
-import { WeatherWidget } from './components/weather'
 import { styled } from '@mui/material'
 
 import './App.css'
@@ -17,6 +16,7 @@ const Container = styled('main')`
   position: absolute;
   top: 0;
   left: 0;
+  overflow: hidden;
 `
 
 function App() {
@@ -24,8 +24,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Container>
         <ThreeScene />
-        {/* <ClockWidget />
-        <WeatherWidget /> */}
+        <Clock />
       </Container>
     </QueryClientProvider>
   )
