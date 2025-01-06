@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import type { Point, Star } from '../types'
 import { calcStarColor, calcStarPosition } from '../utils'
 import { getLmst } from '../utils/get-lmst'
-import { DEFAULT_COORDINATES } from '../constants'
+import { CELESTIAL_UPDATE_INTERVAL, DEFAULT_COORDINATES } from '../constants'
 import { useCallback, useMemo } from 'react'
 import { useInterval } from 'usehooks-ts'
 
@@ -39,7 +39,7 @@ export function useStarfield(localPosition: Point = DEFAULT_COORDINATES) {
     return starfieldMesh
   }, [updateStarfield])
 
-  useInterval(updateStarfield, 1000)
+  useInterval(updateStarfield, CELESTIAL_UPDATE_INTERVAL)
 
   return {
     mesh,

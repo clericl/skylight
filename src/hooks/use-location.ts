@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { geolocate } from "../utils"
-import { locationQueryKey } from "../constants/query-keys"
+import { locationQueryKey } from "../constants"
 import type { Point } from "../types"
 import { DEFAULT_COORDINATES } from "../constants"
 
