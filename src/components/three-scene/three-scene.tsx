@@ -13,7 +13,7 @@ export function ThreeScene({ children }: ThreeSceneProps) {
     <Canvas
       shadows
       camera={{
-        position: [0, -0.01, 0],
+        position: [0, -0.1, 0],
         fov: 70,
       }}
     >

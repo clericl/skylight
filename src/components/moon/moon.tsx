@@ -12,19 +12,17 @@ export function Moon() {
   const location = useLocation()
 
   useFrame(() => {
-    const date = new Date(2024, 11, 15, 23, 47)
+    const date = new Date()
     const place = location.data
     
-    const angles = SunCalc.getMoonPosition(date, place.latitude, place.longitude)
-    const phi = (Math.PI / 2) - angles.altitude
-    const theta = angles.azimuth
-    
+    const { altitude, azimuth } = SunCalc.getMoonPosition(date, place.latitude, place.longitude)
+
     if (moonRef.current) {
-      moonRef.current.position.setFromSphericalCoords(1, (Math.PI / 2) - phi, theta)
+      moonRef.current.position.setFromSphericalCoords(1, (Math.PI / 2) - altitude, azimuth)
     }
 
     if (umbraRef.current) {
-      umbraRef.current.position.setFromSphericalCoords(1, (Math.PI / 2) - phi, theta)
+      umbraRef.current.position.setFromSphericalCoords(1, (Math.PI / 2) - altitude, azimuth)
       umbraRef.current.position.negate()
     }
 
@@ -44,7 +42,7 @@ export function Moon() {
 
   return (
     <group>
-      <mesh position={[0, 0, 0]} castShadow ref={earthRef}>
+      <mesh castShadow ref={earthRef}>
         <sphereGeometry args={[MOON_SIZE * 1.3]} />
         <meshStandardMaterial color="green" transparent opacity={1} />
       </mesh>

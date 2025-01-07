@@ -1,17 +1,17 @@
 import * as THREE from 'three'
-import { useFrame } from "@react-three/fiber"
-import { useMemo, useRef } from 'react'
-import { useConstellations, useStarfield } from '../../hooks'
 import constellations from "../../assets/constellations.json"
-import type { Constellation } from '../../types'
+import { useFrame } from "@react-three/fiber"
+import { ForwardedRef, forwardRef, useMemo, useRef } from 'react'
+import { useConstellations, useStarfield } from '../../hooks'
 import { Text } from '@react-three/drei'
+import type { Constellation } from '../../types'
 
 const calcBox = new THREE.Box3()
 const calcVec = new THREE.Vector3()
 const nightColor = new THREE.Color().setRGB(0.001, 0.0, 0.01)
 const unitVec = new THREE.Vector3()
 
-export function CelestialSphere() {
+export const CelestialSphere = forwardRef(function(_, ref: ForwardedRef<THREE.Group>) {
   const { mesh: starfieldMesh } = useStarfield()
   const { constellationsGroup } = useConstellations(constellations as Constellation[])
   const labelsRef = useRef<THREE.Group>(null)
@@ -43,9 +43,9 @@ export function CelestialSphere() {
   })
 
   return (
-    <group>
+    <group ref={ref}>
       <primitive object={starfieldMesh} />
-      <primitive object={constellationsGroup} />
+      {/* <primitive object={constellationsGroup} /> */}
       <mesh>
         <sphereGeometry args={[2]} />
         <meshBasicMaterial color={nightColor} side={THREE.BackSide} transparent />
@@ -55,4 +55,4 @@ export function CelestialSphere() {
       </group>
     </group>
   )
-}
+})

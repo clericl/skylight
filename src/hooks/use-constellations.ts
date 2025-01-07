@@ -1,15 +1,15 @@
-import { useCallback, useState } from "react";
-import { Line2, LineGeometry, LineMaterial } from "three/examples/jsm/Addons.js";
 import * as THREE from 'three'
-import type { Constellation, Point } from "../types";
 import { calcStarColor, calcStarPosition, getLmst } from "../utils";
-import { CELESTIAL_UPDATE_INTERVAL, DEFAULT_COORDINATES } from "../constants";
+import { useCallback, useState } from "react";
 import { useInterval } from "usehooks-ts";
+import { Line2, LineGeometry, LineMaterial } from "three/examples/jsm/Addons.js";
+import { CELESTIAL_UPDATE_INTERVAL, DEFAULT_COORDINATES } from "../constants";
+import type { Constellation, Point } from "../types";
 
 const calcMatrix = new THREE.Matrix4()
-const lineMaterial = new LineMaterial({ color: 'white', linewidth: 0.1 })
+const lineMaterial = new LineMaterial({ color: 'white', linewidth: 0.1, transparent: true })
 const starGeometry = new THREE.SphereGeometry(0.002)
-const starMaterial = new THREE.MeshBasicMaterial({ toneMapped: false })
+const starMaterial = new THREE.MeshBasicMaterial({ toneMapped: false, transparent: true })
 
 export function useConstellations(constellationList: Constellation[], localPosition: Point = DEFAULT_COORDINATES) {
   const [[constellationsArr, pointsMesh, constellationsGroup]] = useState<[Line2[][], THREE.InstancedMesh, THREE.Group]>(() => {

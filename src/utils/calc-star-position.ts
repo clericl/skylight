@@ -25,5 +25,5 @@ export function calcStarPosition(star: Star, lmst: number, localPosition: Point 
     localPosition.latitude,
   )
 
-  return calcVec.setFromSphericalCoords(1, (Math.PI / 2) - altitude, -azimuth)
+  return calcVec.setFromSphericalCoords(1, altitude, azimuth)
 }
