@@ -9,7 +9,8 @@ const ClockContainer = styled(Stack)`
   bottom: 0;
   font-size: 20vw;
   color: white;
-  `
+  pointer-events: none;
+`
   
   const StyledTypography = styled(Typography)`
   font-size: inherit;

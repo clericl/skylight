@@ -6,6 +6,7 @@ import { useLocation } from "../../hooks"
 import { MOON_SIZE } from "../../constants"
 
 const calcSpherical = new THREE.Spherical()
+const moonColor = new THREE.Color(1.5, 1.5, 1.2)
 
 export function Moon() {
   const moonRef = useRef<THREE.Mesh>(null)
@@ -26,7 +27,7 @@ export function Moon() {
   return (
     <mesh ref={moonRef}>
       <sphereGeometry args={[MOON_SIZE]} />
-      <meshBasicMaterial color="white" />
+      <meshBasicMaterial color={moonColor} toneMapped={false} />
     </mesh>
   )
 }

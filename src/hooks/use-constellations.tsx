@@ -10,7 +10,13 @@ import { useThree } from '@react-three/fiber';
 const calcBox = new THREE.Box3()
 const calcVec = new THREE.Vector3()
 const calcMatrix = new THREE.Matrix4()
-const lineMaterial = new LineMaterial({ color: 'white', linewidth: 0.1, transparent: true })
+const lineMaterial = new LineMaterial({
+  color: new THREE.Color(1, 1.5, 2),
+  linewidth: 0.4,
+  toneMapped: false,
+  transparent: true,
+  opacity: 0.1,
+})
 const starGeometry = new THREE.SphereGeometry(0.0015)
 const starMaterial = new THREE.MeshBasicMaterial({ toneMapped: false, transparent: true })
 

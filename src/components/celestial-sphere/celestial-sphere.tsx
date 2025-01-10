@@ -31,7 +31,7 @@ export const CelestialSphere = forwardRef(function(_, ref: ForwardedRef<THREE.Gr
         calcBox.setFromObject(constellationsGroup.children[index])
         calcBox.getCenter(calcVec)
 
-        child.position.copy(calcVec)
+        child.position.copy(calcVec).normalize()
       })
 
       if (needsToRotateRef.current) {
@@ -70,7 +70,7 @@ export const CelestialSphere = forwardRef(function(_, ref: ForwardedRef<THREE.Gr
       </group>
 
       <Moon />
-      
+
       <group ref={labelsRef}>
         {labels}
       </group>
