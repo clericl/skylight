@@ -4,7 +4,6 @@ import { useFrame } from "@react-three/fiber";
 import { useLocation } from '../../hooks';
 import { useRef } from 'react';
 import { SkyGeometry } from "three/examples/jsm/Addons.js";
-import { Moon } from '../moon';
 import { CelestialSphere } from '../celestial-sphere';
 
 const calcVec = new THREE.Vector3()
@@ -21,26 +20,25 @@ export function Sky() {
     
     // const moon = SunCalc.getMoonPosition(date, place.latitude, place.longitude)
 
-    if (skyRef.current) {
-      const { altitude, azimuth } = SunCalc.getPosition(date, place.latitude, place.longitude)
+    // if (skyRef.current) {
+    //   const { altitude, azimuth } = SunCalc.getPosition(date, place.latitude, place.longitude)
       
-      calcVec.setFromSphericalCoords(1, (Math.PI / 2) - altitude, azimuth + Math.PI)
+    //   calcVec.setFromSphericalCoords(1, (Math.PI / 2) - altitude, azimuth + Math.PI)
 
-      if (nightRef.current) {
-        nightRef.current.traverse((obj) => {
-          if (obj.material) {
-            // obj.material.opacity = Math.cos(sunPositionVec.y + (Math.PI / 4)) + 0.1
-            // obj.material.visible = false
-          }
-        })
-      }
-    }
+    //   if (nightRef.current) {
+    //     nightRef.current.traverse((obj) => {
+    //       if (obj.material) {
+    //         obj.material.opacity = Math.cos(sunPositionVec.y + (Math.PI / 4)) + 0.1
+    //         obj.material.visible = false
+    //       }
+    //     })
+    //   }
+    // }
   })
 
   return (
     <group>
       <CelestialSphere ref={nightRef} />
-      <Moon />
     </group>
   )
 }

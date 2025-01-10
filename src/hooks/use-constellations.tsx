@@ -1,18 +1,27 @@
 import * as THREE from 'three'
 import { calcStarColor, calcStarPosition, getLmst } from "../utils";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useInterval } from "usehooks-ts";
 import { Line2, LineGeometry, LineMaterial } from "three/examples/jsm/Addons.js";
 import { CELESTIAL_UPDATE_INTERVAL, DEFAULT_COORDINATES } from "../constants";
 import type { Constellation, Point } from "../types";
+import { useThree } from '@react-three/fiber';
 
+const calcBox = new THREE.Box3()
+const calcVec = new THREE.Vector3()
 const calcMatrix = new THREE.Matrix4()
 const lineMaterial = new LineMaterial({ color: 'white', linewidth: 0.1, transparent: true })
-const starGeometry = new THREE.SphereGeometry(0.002)
+const starGeometry = new THREE.SphereGeometry(0.0015)
 const starMaterial = new THREE.MeshBasicMaterial({ toneMapped: false, transparent: true })
 
 export function useConstellations(constellationList: Constellation[], localPosition: Point = DEFAULT_COORDINATES) {
-  const [[constellationsArr, pointsMesh, constellationsGroup]] = useState<[Line2[][], THREE.InstancedMesh, THREE.Group]>(() => {
+  const { invalidate } = useThree()
+  
+  const [[constellationsArr, pointsMesh, constellationsGroup]] = useState<[
+    Line2[][],
+    THREE.InstancedMesh,
+    THREE.Group,
+  ]>(() => {
     const constellationsArr: Line2[][] = []
     const constellationsGroup = new THREE.Group()
     
@@ -39,15 +48,15 @@ export function useConstellations(constellationList: Constellation[], localPosit
       constellationsArr.push(linesArr)
     }
 
-    const instanced = new THREE.InstancedMesh(
+    const pointsMesh = new THREE.InstancedMesh(
       starGeometry,
       starMaterial,
       starCount
     )
 
-    constellationsGroup.add(instanced)
+    invalidate()
 
-    return [constellationsArr, instanced, constellationsGroup]
+    return [constellationsArr, pointsMesh, constellationsGroup]
   })
 
   const updatePositions = useCallback(() => {
@@ -57,6 +66,7 @@ export function useConstellations(constellationList: Constellation[], localPosit
 
     for (let i = 0; i < constellationsArr.length; i++) {
       const lines = constellationsArr[i]
+      const linePositions = []
 
       for (let j = 0; j < lines.length; j++) {
         const line = lines[j]
@@ -74,9 +84,26 @@ export function useConstellations(constellationList: Constellation[], localPosit
         }
 
         line.geometry.setPositions(positions)
+        linePositions.push(...positions)
       }
+
+      calcBox.setFromArray(linePositions)
+      calcBox.getCenter(calcVec)
     }
-  }, [constellationsArr, constellationList, localPosition, pointsMesh])
+
+    pointsMesh.instanceColor!.needsUpdate = true
+    pointsMesh.instanceMatrix!.needsUpdate = true
+
+    invalidate()
+  }, [constellationsArr, constellationList, invalidate, localPosition, pointsMesh])
+
+  useEffect(() => {
+    updatePositions()
+
+    return () => {
+      pointsMesh.dispose()
+    }
+  }, [pointsMesh, updatePositions])
 
   useInterval(updatePositions, CELESTIAL_UPDATE_INTERVAL)
 

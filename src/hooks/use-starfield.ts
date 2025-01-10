@@ -8,7 +8,7 @@ import { CELESTIAL_UPDATE_INTERVAL, DEFAULT_COORDINATES } from '../constants'
 import { useCallback, useMemo } from 'react'
 import { useInterval } from 'usehooks-ts'
 
-const data = (d3.csvParse(starfieldCsv) as Star[]).filter((star) => star.proper.includes('Polaris'))
+const data = (d3.csvParse(starfieldCsv) as Star[])
 const calcMatrix = new THREE.Matrix4()
 const geometry = new THREE.SphereGeometry(0.001)
 const material = new THREE.MeshBasicMaterial({ toneMapped: false, transparent: true })
@@ -31,6 +31,9 @@ export function useStarfield(localPosition: Point = DEFAULT_COORDINATES) {
       starfieldMesh.setMatrixAt(i, calcMatrix)
       starfieldMesh.setColorAt(i, calcStarColor(datum))
     }
+
+    starfieldMesh.instanceColor!.needsUpdate = true
+    starfieldMesh.instanceMatrix!.needsUpdate = true
   }, [localPosition])
 
   const mesh = useMemo(() => {
