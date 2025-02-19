@@ -25,7 +25,7 @@ export function CelestialSphere({ fadeWithTime }: CelestialSphereProps) {
   const utilRef = useRef<THREE.Group>(null)
   const needsToRotateRef = useRef(true)
   const constellationsRef = useRef<THREE.Group>(null)
-  const showConstellationsRef = useRef(true)
+  const showConstellationsRef = useRef(false)
 
   const labels = useMemo(() => constellations.map(({ label }) => (
     <Text fontSize={0.01} key={label}>{label}</Text>
@@ -34,24 +34,6 @@ export function CelestialSphere({ fadeWithTime }: CelestialSphereProps) {
   const location = useLocation()
   
   useFrame(() => {
-    if (labelsRef.current) {
-      labelsRef.current.children.forEach((child, index) => {
-        calcBox.setFromObject(constellationsGroup.children[index])
-        calcBox.getCenter(calcVec)
-
-        child.position.copy(calcVec).normalize()
-      })
-
-      if (needsToRotateRef.current) {
-        labelsRef.current.children.forEach((child) => {
-          child.lookAt(unitVec)
-        })
-        utilRef.current!.children.forEach((child) => {
-          child.lookAt(unitVec)
-        })
-      }
-    }
-
     if (fadeWithTime && starsRef.current) {
       const { altitude } = calcSunPosition(location.data)
 
@@ -73,6 +55,24 @@ export function CelestialSphere({ fadeWithTime }: CelestialSphereProps) {
 
     if (constellationsRef.current) {
       constellationsRef.current.visible = showConstellationsRef.current
+
+      if (labelsRef.current) {
+        labelsRef.current.children.forEach((child, index) => {
+          calcBox.setFromObject(constellationsGroup.children[index])
+          calcBox.getCenter(calcVec)
+  
+          child.position.copy(calcVec).normalize()
+        })
+  
+        if (needsToRotateRef.current) {
+          labelsRef.current.children.forEach((child) => {
+            child.lookAt(unitVec)
+          })
+          utilRef.current!.children.forEach((child) => {
+            child.lookAt(unitVec)
+          })
+        }
+      }
     }
   })
 
@@ -80,7 +80,6 @@ export function CelestialSphere({ fadeWithTime }: CelestialSphereProps) {
     <>
       <group ref={starsRef}>
         <primitive object={starfieldMesh} />
-        <primitive object={constellationsGroup} ref={constellationsRef} />
         <primitive object={pointsMesh} />
         <mesh>
           <sphereGeometry args={[2]} />
@@ -98,8 +97,11 @@ export function CelestialSphere({ fadeWithTime }: CelestialSphereProps) {
 
       <Moon />
 
-      <group ref={labelsRef}>
-        {labels}
+      <group ref={constellationsRef}>
+        <primitive object={constellationsGroup} ref={constellationsRef} />
+        <group ref={labelsRef}>
+          {labels}
+        </group>
       </group>
     </>
   )

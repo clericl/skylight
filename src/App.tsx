@@ -6,6 +6,7 @@ import { ThreeScene } from './components/three-scene'
 import { styled } from '@mui/material'
 
 import './App.css'
+import { Weather } from './components/weather'
 
 const queryClient = new QueryClient()
 
@@ -28,6 +29,7 @@ function App() {
         <ThreeScene>
           <CelestialSphere fadeWithTime />
           <DaySky />
+          <Weather />
         </ThreeScene>
         <Clock />
       </Container>
