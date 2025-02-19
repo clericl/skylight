@@ -1,21 +1,27 @@
 import * as THREE from 'three'
 import constellations from "../../assets/constellations.json"
+import { calcSunPosition } from '../../utils'
+import { useConstellations, useLocation, useStarfield } from '../../hooks'
 import { useFrame } from "@react-three/fiber"
-import { Text } from '@react-three/drei'
-import { ForwardedRef, forwardRef, useMemo, useRef } from 'react'
-import { useConstellations, useStarfield } from '../../hooks'
-import type { Constellation } from '../../types'
+import { useMemo, useRef } from 'react'
 import { Moon } from '../moon'
+import { Text } from '@react-three/drei'
+import type { Constellation } from '../../types'
 
 const calcBox = new THREE.Box3()
 const calcVec = new THREE.Vector3()
 const nightColor = new THREE.Color().setRGB(0.001, 0.0, 0.01)
 const unitVec = new THREE.Vector3()
 
-export const CelestialSphere = forwardRef(function(_, ref: ForwardedRef<THREE.Group>) {
+type CelestialSphereProps = {
+  fadeWithTime?: boolean;
+}
+
+export function CelestialSphere({ fadeWithTime }: CelestialSphereProps) {
   const { mesh: starfieldMesh } = useStarfield()
   const { constellationsGroup, pointsMesh } = useConstellations(constellations as Constellation[])
   const labelsRef = useRef<THREE.Group>(null)
+  const starsRef = useRef<THREE.Group>(null)
   const utilRef = useRef<THREE.Group>(null)
   const needsToRotateRef = useRef(true)
   const constellationsRef = useRef<THREE.Group>(null)
@@ -24,6 +30,8 @@ export const CelestialSphere = forwardRef(function(_, ref: ForwardedRef<THREE.Gr
   const labels = useMemo(() => constellations.map(({ label }) => (
     <Text fontSize={0.01} key={label}>{label}</Text>
   )), [])
+
+  const location = useLocation()
   
   useFrame(() => {
     if (labelsRef.current) {
@@ -44,6 +52,25 @@ export const CelestialSphere = forwardRef(function(_, ref: ForwardedRef<THREE.Gr
       }
     }
 
+    if (fadeWithTime && starsRef.current) {
+      const { altitude } = calcSunPosition(location.data)
+
+      const smoothedOpacity = 1 - THREE.MathUtils.smoothstep(altitude, -0.3, 0.4)
+
+      if (labelsRef.current) {
+        labelsRef.current.visible = smoothedOpacity >= 0.5
+      }
+
+      starsRef.current.traverse((node) => {
+        const mat = (node as THREE.Mesh).material as THREE.Material
+
+        if (mat) {
+          mat.transparent = true
+          mat.opacity = smoothedOpacity
+        }
+      })
+    }
+
     if (constellationsRef.current) {
       constellationsRef.current.visible = showConstellationsRef.current
     }
@@ -51,11 +78,11 @@ export const CelestialSphere = forwardRef(function(_, ref: ForwardedRef<THREE.Gr
 
   return (
     <>
-      <group ref={ref}>
+      <group ref={starsRef}>
         <primitive object={starfieldMesh} />
         <primitive object={constellationsGroup} ref={constellationsRef} />
         <primitive object={pointsMesh} />
-        <mesh onClick={() => showConstellationsRef.current = !showConstellationsRef.current}>
+        <mesh>
           <sphereGeometry args={[2]} />
           <meshBasicMaterial color={nightColor} side={THREE.BackSide} transparent />
         </mesh>
@@ -76,4 +103,4 @@ export const CelestialSphere = forwardRef(function(_, ref: ForwardedRef<THREE.Gr
       </group>
     </>
   )
-})
+}

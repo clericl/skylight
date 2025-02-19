@@ -1,3 +1,4 @@
+export { calcMoonPosition } from './calc-moon-position'
 export { calcStarColor } from './calc-star-color'
 export { calcStarPosition } from './calc-star-position'
 export { calcSunPosition } from './calc-sun-position'

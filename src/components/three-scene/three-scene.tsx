@@ -1,6 +1,5 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Sky } from "../sky";
 import { Effects } from "../effects";
 import type { ReactNode } from "react";
 
@@ -18,7 +17,6 @@ export function ThreeScene({ children }: ThreeSceneProps) {
       }}
     >
       <color attach="background" args={['#000000']} />
-      <Sky />
       {children}
       <OrbitControls />
       <Effects />

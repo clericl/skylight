@@ -1,4 +1,6 @@
+import { CelestialSphere } from './components/celestial-sphere'
 import { Clock } from './components/clock'
+import { DaySky } from './components/day-sky'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThreeScene } from './components/three-scene'
 import { styled } from '@mui/material'
@@ -23,7 +25,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Container>
-        <ThreeScene />
+        <ThreeScene>
+          <CelestialSphere fadeWithTime />
+          <DaySky />
+        </ThreeScene>
         <Clock />
       </Container>
     </QueryClientProvider>
