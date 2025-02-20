@@ -1,32 +1,45 @@
 import * as THREE from 'three'
 import { Cloud, Clouds as DreiClouds } from "@react-three/drei";
+import { useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 
-const CONTRAST_COLOR = new THREE.Color('#858585')
-const CLOUD_COLOR = new THREE.Color('#d6d6d6')
+const CONTRAST_COLOR = new THREE.Color(0x303030)
+const CLOUD_COLOR = new THREE.Color(0x595959)
 
 export function Clouds() {
+  const cloudsRef = useRef<THREE.Group>(null)
+  const materialUpdated = useRef<boolean>(false)
+  
+  useFrame(() => {
+    if (!materialUpdated.current && cloudsRef.current) {
+      cloudsRef.current.renderOrder = 1
+      materialUpdated.current = true
+    }
+  })
+
   return (
-    <DreiClouds limit={2000} material={THREE.MeshBasicMaterial}>
+    <DreiClouds
+      frustumCulled={false}
+      limit={1200}
+      material={THREE.MeshBasicMaterial}
+      ref={cloudsRef}
+    >
       <Cloud
-        bounds={[15, 1.5, 15]}
+        bounds={[10, 2, 10]}
         color={CONTRAST_COLOR}
         concentrate="outside"
-        segments={500}
-        scale={0.11}
-        speed={0.1}
-        volume={5}
-        smallestVolume={1}
-        position={[0, 0.5, 0]}
-        />
+        segments={600}
+        scale={0.1}
+        speed={0.2}
+        position={[0, 0.25, 0]}
+      />
       <Cloud
-        bounds={[15, 1.5, 15]}
+        bounds={[10, 2, 10]}
         color={CLOUD_COLOR}
         concentrate="inside"
-        segments={500}
-        scale={0.11}
+        segments={600}
+        scale={0.1}
         speed={0.2}
-        volume={5}
-        smallestVolume={0.75}
       />
     </DreiClouds>
   )

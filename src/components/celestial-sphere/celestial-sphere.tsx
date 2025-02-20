@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import constellations from "../../assets/constellations.json"
-import { calcSunPosition } from '../../utils'
 import { useConstellations, useLocation, useStarfield } from '../../hooks'
 import { useFrame } from "@react-three/fiber"
 import { useMemo, useRef } from 'react'
@@ -10,14 +9,9 @@ import type { Constellation } from '../../types'
 
 const calcBox = new THREE.Box3()
 const calcVec = new THREE.Vector3()
-const nightColor = new THREE.Color().setRGB(0.001, 0.0, 0.01)
 const unitVec = new THREE.Vector3()
 
-type CelestialSphereProps = {
-  fadeWithTime?: boolean;
-}
-
-export function CelestialSphere({ fadeWithTime }: CelestialSphereProps) {
+export function CelestialSphere() {
   const { mesh: starfieldMesh } = useStarfield()
   const { constellationsGroup, pointsMesh } = useConstellations(constellations as Constellation[])
   const labelsRef = useRef<THREE.Group>(null)
@@ -34,24 +28,23 @@ export function CelestialSphere({ fadeWithTime }: CelestialSphereProps) {
   const location = useLocation()
   
   useFrame(() => {
-    if (fadeWithTime && starsRef.current) {
-      const { altitude } = calcSunPosition(location.data)
+    // if (fadeWithTime && starsRef.current) {
+    //   const { altitude } = calcSunPosition(location.data)
 
-      const smoothedOpacity = 1 - THREE.MathUtils.smoothstep(altitude, -0.3, 0.4)
+    //   const smoothedOpacity = 1 - THREE.MathUtils.smoothstep(altitude, -0.3, 0.4)
 
-      if (labelsRef.current) {
-        labelsRef.current.visible = smoothedOpacity >= 0.5
-      }
+    //   if (labelsRef.current) {
+    //     labelsRef.current.visible = smoothedOpacity >= 0.5
+    //   }
 
-      starsRef.current.traverse((node) => {
-        const mat = (node as THREE.Mesh).material as THREE.Material
+    //   starsRef.current.traverse((node) => {
+    //     const mat = (node as THREE.Mesh).material as THREE.Material
 
-        if (mat) {
-          mat.transparent = true
-          mat.opacity = smoothedOpacity
-        }
-      })
-    }
+    //     if (mat) {
+    //       mat.opacity = smoothedOpacity
+    //     }
+    //   })
+    // }
 
     if (constellationsRef.current) {
       constellationsRef.current.visible = showConstellationsRef.current
@@ -81,17 +74,13 @@ export function CelestialSphere({ fadeWithTime }: CelestialSphereProps) {
       <group ref={starsRef}>
         <primitive object={starfieldMesh} />
         <primitive object={pointsMesh} />
-        <mesh>
-          <sphereGeometry args={[2]} />
-          <meshBasicMaterial color={nightColor} side={THREE.BackSide} transparent />
-        </mesh>
         <group ref={utilRef}>
-          <Text fontSize={0.1} position={[0, 1, -0.1]}>
+          {/* <Text fontSize={0.1} position={[0, 1, -0.1]}>
             North
           </Text>
           <Text fontSize={0.1} position={[0, 1, 0.1]}>
             South
-          </Text>
+          </Text> */}
         </group>
       </group>
 
