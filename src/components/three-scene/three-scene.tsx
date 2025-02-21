@@ -19,7 +19,7 @@ export function ThreeScene({ children }: ThreeSceneProps) {
       <color attach="background" args={['#000000']} />
       {children}
       <OrbitControls />
-      {/* <Effects /> */}
+      <Effects />
     </Canvas>
   )
 }

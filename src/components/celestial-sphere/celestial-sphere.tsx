@@ -2,10 +2,13 @@ import * as THREE from 'three'
 import constellations from "../../assets/constellations.json"
 import { useConstellations, useLocation, useStarfield } from '../../hooks'
 import { useFrame } from "@react-three/fiber"
-import { useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { Moon } from '../moon'
 import { Text } from '@react-three/drei'
 import type { Constellation } from '../../types'
+import { calcSunPosition } from '../../utils'
+import { useInterval } from 'usehooks-ts'
+import { CELESTIAL_UPDATE_INTERVAL } from '../../constants'
 
 const calcBox = new THREE.Box3()
 const calcVec = new THREE.Vector3()
@@ -19,52 +22,51 @@ export function CelestialSphere() {
   const utilRef = useRef<THREE.Group>(null)
   const needsToRotateRef = useRef(true)
   const constellationsRef = useRef<THREE.Group>(null)
-  const showConstellationsRef = useRef(false)
 
   const labels = useMemo(() => constellations.map(({ label }) => (
     <Text fontSize={0.01} key={label}>{label}</Text>
   )), [])
 
   const location = useLocation()
+
+  const updateStarVisibility = useCallback(() => {
+    if (starsRef.current) {
+      const { altitude } = calcSunPosition(location.data)
+  
+      const smoothedOpacity = 1 - THREE.MathUtils.smoothstep(altitude, -0.3, 0.4)
+  
+      if (constellationsRef.current) {
+        constellationsRef.current.visible = smoothedOpacity >= 0.5
+      }
+  
+      starsRef.current.traverse((node) => {
+        const mat = (node as THREE.Mesh).material as THREE.Material
+  
+        if (mat) {
+          mat.opacity = smoothedOpacity
+        }
+      })
+    }
+  }, [location.data])
+
+  useInterval(updateStarVisibility, CELESTIAL_UPDATE_INTERVAL)
   
   useFrame(() => {
-    // if (fadeWithTime && starsRef.current) {
-    //   const { altitude } = calcSunPosition(location.data)
+    if (labelsRef.current) {
+      labelsRef.current.children.forEach((child, index) => {
+        calcBox.setFromObject(constellationsGroup.children[index])
+        calcBox.getCenter(calcVec)
 
-    //   const smoothedOpacity = 1 - THREE.MathUtils.smoothstep(altitude, -0.3, 0.4)
+        child.position.copy(calcVec).normalize()
+      })
 
-    //   if (labelsRef.current) {
-    //     labelsRef.current.visible = smoothedOpacity >= 0.5
-    //   }
-
-    //   starsRef.current.traverse((node) => {
-    //     const mat = (node as THREE.Mesh).material as THREE.Material
-
-    //     if (mat) {
-    //       mat.opacity = smoothedOpacity
-    //     }
-    //   })
-    // }
-
-    if (constellationsRef.current) {
-      constellationsRef.current.visible = showConstellationsRef.current
-
-      if (labelsRef.current) {
-        labelsRef.current.children.forEach((child, index) => {
-          calcBox.setFromObject(constellationsGroup.children[index])
-          calcBox.getCenter(calcVec)
-  
-          child.position.copy(calcVec).normalize()
+      if (needsToRotateRef.current) {
+        labelsRef.current.children.forEach((child) => {
+          child.lookAt(unitVec)
         })
-  
-        if (needsToRotateRef.current) {
-          labelsRef.current.children.forEach((child) => {
-            child.lookAt(unitVec)
-          })
-          utilRef.current!.children.forEach((child) => {
-            child.lookAt(unitVec)
-          })
-        }
+        utilRef.current!.children.forEach((child) => {
+          child.lookAt(unitVec)
+        })
       }
     }
   })
@@ -87,7 +89,7 @@ export function CelestialSphere() {
       <Moon />
 
       <group ref={constellationsRef}>
-        <primitive object={constellationsGroup} ref={constellationsRef} />
+        <primitive object={constellationsGroup} />
         <group ref={labelsRef}>
           {labels}
         </group>

@@ -9,4 +9,5 @@ export type {
   Temperature,
   TemperatureUnit,
   Weather,
+  WeatherCategory,
 } from './types'

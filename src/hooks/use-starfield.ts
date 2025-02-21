@@ -11,7 +11,10 @@ import { useInterval } from 'usehooks-ts'
 const data = (d3.csvParse(starfieldCsv) as Star[])
 const calcMatrix = new THREE.Matrix4()
 const geometry = new THREE.SphereGeometry(0.001)
-const material = new THREE.MeshBasicMaterial({ toneMapped: false, transparent: true })
+const material = new THREE.MeshBasicMaterial({
+  toneMapped: false,
+  transparent: true,
+})
 const starfieldMesh = new THREE.InstancedMesh(
   geometry,
   material,

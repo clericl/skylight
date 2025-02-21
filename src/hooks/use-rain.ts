@@ -15,56 +15,74 @@ const rainMaterial = new THREE.MeshBasicMaterial({
   transparent: true,
 })
 
-export function useRain(count: number) {
-  const [mesh] = useState(new THREE.InstancedMesh(
-    rainGeometry,
-    rainMaterial,
-    count,
-  ))
+export function useRain(count: number | null) {
+  const [mesh, setMesh] = useState<THREE.InstancedMesh | null>(null)
 
   const initializeRainPositions = useCallback(() => {
-    for (let i = 0; i < count; i++) {
-      calcMatrix.setPosition(
-        (Math.random() * 2) - 1,
-        Math.random(),
-        (Math.random() * 2) - 1,
-      )
-
-      mesh.setMatrixAt(i, calcMatrix)
+    if (mesh) {
+      for (let i = 0; i < (count ?? 0); i++) {
+        calcMatrix.setPosition(
+          (Math.random() * 2) - 1,
+          Math.random(),
+          (Math.random() * 2) - 1,
+        )
+  
+        mesh.setMatrixAt(i, calcMatrix)
+      }
+  
+      mesh.instanceMatrix!.needsUpdate = true
     }
-
-    mesh.instanceMatrix!.needsUpdate = true
   }, [count, mesh])
 
   useFrame(() => {
-    for (let i = 0; i < count; i++) {
-      mesh.getMatrixAt(i, calcMatrix)
-
-      calcVec.setFromMatrixPosition(calcMatrix)
-
-      if (calcVec.y < -0.5) {
-        calcMatrix.setPosition(
-          (Math.random() * 2) - 1,
-          (Math.random() * 0.25) + 0.5,
-          (Math.random() * 2) - 1,
-        )
-      } else {
-        calcMatrix.setPosition(
-          calcVec.x,
-          calcVec.y - BASE_VELOCITY,
-          calcVec.z,
-        )
+    if (mesh) {
+      for (let i = 0; i < (count ?? 0); i++) {
+        mesh.getMatrixAt(i, calcMatrix)
+  
+        calcVec.setFromMatrixPosition(calcMatrix)
+  
+        if (calcVec.y < -0.5) {
+          calcMatrix.setPosition(
+            (Math.random() * 2) - 1,
+            (Math.random() * 0.25) + 0.5,
+            (Math.random() * 2) - 1,
+          )
+        } else {
+          calcMatrix.setPosition(
+            calcVec.x,
+            calcVec.y - BASE_VELOCITY,
+            calcVec.z,
+          )
+        }
+  
+        mesh.setMatrixAt(i, calcMatrix)
       }
-
-      mesh.setMatrixAt(i, calcMatrix)
+  
+      mesh.instanceMatrix!.needsUpdate = true
     }
-
-    mesh.instanceMatrix!.needsUpdate = true
   })
 
   useEffect(() => {
-    initializeRainPositions()
-  }, [initializeRainPositions])
+    if (count) {
+      setMesh((prevMesh) => {
+        if (prevMesh) {
+          prevMesh.geometry.dispose()
+        }
+
+        return new THREE.InstancedMesh(
+          rainGeometry,
+          rainMaterial,
+          count,
+        )
+      })
+    }
+  }, [count])
+
+  useEffect(() => {
+    if (mesh) {
+      initializeRainPositions()
+    }
+  }, [initializeRainPositions, mesh])
 
   return mesh
 }

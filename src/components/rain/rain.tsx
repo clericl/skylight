@@ -1,9 +1,28 @@
-import { useRain } from '../../hooks'
+import { getWeatherCategory, getWeatherQuantity } from '../../utils'
+import { useMemo } from 'react'
+import { useRain, useWeather } from '../../hooks'
+import { WeatherCategory } from '../../constants'
 
 export function Rain() {
-  const rainMesh = useRain(800)
+  const weather = useWeather()
 
-  return (
+  const rainAmount = useMemo(() => {
+    const weatherData = weather.data?.weather
+    
+    if (weatherData) {
+      const category = getWeatherCategory(weatherData)
+
+      if (category !== WeatherCategory.RAIN) return null
+
+      return getWeatherQuantity(weatherData)
+    }
+
+    return null
+  }, [weather.data])
+
+  const rainMesh = useRain(rainAmount)
+
+  return rainMesh && (
     <primitive object={rainMesh} />
   )
 }

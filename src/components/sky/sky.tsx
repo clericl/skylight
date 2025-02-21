@@ -8,7 +8,8 @@ import { calcSunPosition } from '../../utils';
 
 const calcVec = new THREE.Vector3()
 
-const nightColor = new THREE.Color().setRGB(0, 0.001, 0.02)
+const DAY_COLOR = new THREE.Color(0xa1c5ff)
+const NIGHT_COLOR = new THREE.Color(0x091133)
 
 export function Sky() {
   const dayRef = useRef<THREE.Mesh<SkyGeometry, THREE.ShaderMaterial>>(null)
@@ -25,8 +26,11 @@ export function Sky() {
     }
     
     if (nightRef.current) {
-      const smoothedOpacity = 1 - THREE.MathUtils.smoothstep(altitude, -0.3, 0.4)
-      nightRef.current.material.opacity = smoothedOpacity
+      const smoothedAltitude = THREE.MathUtils.smoothstep(altitude, -0.3, 0.4)
+      // const smoothedAltitude = 0.4
+
+      nightRef.current.material.opacity = 1 - smoothedAltitude
+      nightRef.current.material.color.lerpColors(NIGHT_COLOR, DAY_COLOR, smoothedAltitude)
     }
   })
 
@@ -35,9 +39,9 @@ export function Sky() {
       <DreiSky distance={2.04} ref={dayRef} />
       
       <mesh ref={nightRef}>
-        <sphereGeometry args={[1.02]} />
+        <sphereGeometry args={[.99]} />
         <meshBasicMaterial
-          color={nightColor}
+          color={NIGHT_COLOR}
           side={THREE.BackSide}
           transparent
         />

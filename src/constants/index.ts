@@ -1,4 +1,4 @@
-import { Weather } from "../types";
+import type { Weather } from "../types";
 
 export const locationQueryKey = ['location']
 export const weatherQueryKey = ['weather']
@@ -33,4 +33,11 @@ export const WEATHER_INTENSITY: Partial<Record<Exclude<Weather["intensity"], nul
   "heavy": "heavy",
   "light": "",
   "moderate": "",
+}
+
+export enum WeatherCategory {
+  RAIN,
+  SNOW,
+  HAIL,
+  FOG,
 }
