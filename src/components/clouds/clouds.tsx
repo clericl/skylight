@@ -16,7 +16,6 @@ export function Clouds() {
 
   const shouldRender = useMemo(() => {
     const weatherData = weather.data?.weather
-    console.log(weatherData)
 
     if (weatherData) {
       const category = getWeatherCategory(weatherData)
@@ -42,7 +41,7 @@ export function Clouds() {
       limit={1200}
       material={THREE.MeshBasicMaterial}
       ref={cloudsRef}
-      visible={shouldRender}
+      // visible={shouldRender}
     >
       <Cloud
         bounds={[10, 2, 10]}

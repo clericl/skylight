@@ -1,14 +1,14 @@
 import * as THREE from 'three'
 import constellations from "../../assets/constellations.json"
+import { calcSunPosition } from '../../utils'
+import { useCallback, useMemo, useRef } from 'react'
 import { useConstellations, useLocation, useStarfield } from '../../hooks'
 import { useFrame } from "@react-three/fiber"
-import { useCallback, useMemo, useRef } from 'react'
+import { useInterval } from 'usehooks-ts'
 import { Moon } from '../moon'
 import { Text } from '@react-three/drei'
-import type { Constellation } from '../../types'
-import { calcSunPosition } from '../../utils'
-import { useInterval } from 'usehooks-ts'
 import { CELESTIAL_UPDATE_INTERVAL } from '../../constants'
+import type { Constellation } from '../../types'
 
 const calcBox = new THREE.Box3()
 const calcVec = new THREE.Vector3()
@@ -30,22 +30,24 @@ export function CelestialSphere() {
   const location = useLocation()
 
   const updateStarVisibility = useCallback(() => {
-    if (starsRef.current) {
-      const { altitude } = calcSunPosition(location.data)
-  
-      const smoothedOpacity = 1 - THREE.MathUtils.smoothstep(altitude, -0.3, 0.4)
-  
-      if (constellationsRef.current) {
-        constellationsRef.current.visible = smoothedOpacity >= 0.5
-      }
-  
+    const { altitude } = calcSunPosition(location.data)
+
+    const smoothedOpacity = 1 - THREE.MathUtils.smoothstep(altitude, -0.3, 0.4)
+
+    if (starsRef.current) {      
+      starsRef.current.visible = smoothedOpacity >= 0.5
+
       starsRef.current.traverse((node) => {
         const mat = (node as THREE.Mesh).material as THREE.Material
-  
+        
         if (mat) {
           mat.opacity = smoothedOpacity
         }
       })
+    }
+
+    if (constellationsRef.current) {
+      constellationsRef.current.visible = smoothedOpacity >= 0.5
     }
   }, [location.data])
 
@@ -73,7 +75,7 @@ export function CelestialSphere() {
 
   return (
     <>
-      <group ref={starsRef}>
+      <group ref={starsRef} visible={false}>
         <primitive object={starfieldMesh} />
         <primitive object={pointsMesh} />
         <group ref={utilRef}>
@@ -88,7 +90,7 @@ export function CelestialSphere() {
 
       <Moon />
 
-      <group ref={constellationsRef}>
+      <group ref={constellationsRef} visible={false}>
         <primitive object={constellationsGroup} />
         <group ref={labelsRef}>
           {labels}

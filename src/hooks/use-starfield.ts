@@ -1,12 +1,12 @@
-import starfieldCsv from '../assets/stardata.csv?raw'
 import * as d3 from 'd3-dsv'
 import * as THREE from 'three'
-import type { Point, Star } from '../types'
+import starfieldCsv from '../assets/stardata.csv?raw'
 import { calcStarColor, calcStarPosition } from '../utils'
 import { getLmst } from '../utils/get-lmst'
-import { CELESTIAL_UPDATE_INTERVAL, DEFAULT_COORDINATES } from '../constants'
 import { useCallback, useMemo } from 'react'
 import { useInterval } from 'usehooks-ts'
+import { CELESTIAL_UPDATE_INTERVAL, DEFAULT_COORDINATES } from '../constants'
+import type { Point, Star } from '../types'
 
 const data = (d3.csvParse(starfieldCsv) as Star[])
 const calcMatrix = new THREE.Matrix4()

@@ -2,10 +2,10 @@ import * as THREE from 'three'
 import { calcStarColor, calcStarPosition, getLmst } from "../utils";
 import { useCallback, useEffect, useState } from "react";
 import { useInterval } from "usehooks-ts";
+import { useThree } from '@react-three/fiber';
 import { Line2, LineGeometry, LineMaterial } from "three/examples/jsm/Addons.js";
 import { CELESTIAL_UPDATE_INTERVAL, DEFAULT_COORDINATES } from "../constants";
 import type { Constellation, Point } from "../types";
-import { useThree } from '@react-three/fiber';
 
 const calcBox = new THREE.Box3()
 const calcVec = new THREE.Vector3()

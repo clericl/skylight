@@ -1,5 +1,6 @@
 export { useConstellations } from './use-constellations'
 export { useLocation } from './use-location'
 export { useRain } from './use-rain'
+export { useSnow } from './use-snow'
 export { useStarfield } from './use-starfield'
 export { useWeather } from './use-weather'

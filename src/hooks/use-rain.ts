@@ -8,7 +8,6 @@ const calcMatrix = new THREE.Matrix4()
 const calcVec = new THREE.Vector3()
 
 const rainGeometry = new THREE.ConeGeometry(0.001, 0.04)
-// const rainGeometry = new THREE.SphereGeometry(0.002)
 const rainMaterial = new THREE.MeshBasicMaterial({
   color: 0x515759,
   opacity: 0.1,
