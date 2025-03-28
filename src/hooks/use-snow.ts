@@ -1,123 +1,92 @@
 import * as THREE from 'three'
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useTexture } from '@react-three/drei';
+import { useCallback, useEffect, useState } from "react";
 import { useFrame } from '@react-three/fiber';
 
 const BASE_VELOCITY = 0.001
 
 const calcMatrix = new THREE.Matrix4()
-const calcVec = new THREE.Vector3()
+const calcObj3D = new THREE.Object3D()
 
-const snowGeometry = new THREE.PlaneGeometry(0.005, 0.005)
-const snowMaterial = new THREE.MeshBasicMaterial({
-  color: 0xffffff,
-  opacity: 0.9,
-  transparent: true,
-  blending: THREE.AdditiveBlending,
-  depthTest: false,
-})
+const snowGeometry = new THREE.PlaneGeometry(0.01, 0.01)
 
-const assignSRGB = (texture: THREE.Texture) => {
-  texture.colorSpace = THREE.SRGBColorSpace
-}
+export function useSnow(count: number | null, tex: THREE.Texture) {
+  const generateMesh = useCallback(() => {
+    const snowMaterial = new THREE.MeshBasicMaterial({
+      blending: THREE.AdditiveBlending,
+      alphaMap: tex,
+      alphaTest: 0.5,
+      color: 0xffffff,
+      map: tex,
+      side: THREE.DoubleSide,
+    })
+  
+    const newMesh = new THREE.InstancedMesh(
+      snowGeometry,
+      snowMaterial,
+      count ?? 0,
+    )
 
-export function useSnow(count: number | null) {
-  const [meshes, setMeshes] = useState<THREE.InstancedMesh[]>()
+    for (let i = 0; i < (count ?? 0); i++) {
+      calcMatrix.setPosition(
+        (Math.random() * 2) - 1,
+        (Math.random() * 2),
+        (Math.random() * 2) - 1,
+      )
 
-  const tex1 = useTexture('snowflake1.png', assignSRGB)
-  const tex2 = useTexture('snowflake2.png', assignSRGB)
-  const tex3 = useTexture('snowflake3.png', assignSRGB)
-  const tex4 = useTexture('snowflake4.png', assignSRGB)
-  const tex5 = useTexture('snowflake5.png', assignSRGB)
-
-  const adjustedCount = useMemo(() => count ? Math.ceil(count / 5) : 0, [count])
-
-  const materials: THREE.Material[] | null = useMemo(() => {
-    const textures = [tex1, tex2, tex3, tex4, tex5]
-    
-    if (textures.every(Boolean)) {
-      return textures.map((tex) => {
-        const mat = snowMaterial.clone()
-        mat.map = tex
-        mat.alphaMap = tex
-
-        return mat
-      })
+      newMesh.setMatrixAt(i, calcMatrix)
     }
 
-    return null
-  }, [tex1, tex2, tex3, tex4, tex5])
+    newMesh.instanceMatrix!.needsUpdate = true
 
-  const initializeSnow = useCallback(() => {
-    const newMeshes = []
+    return newMesh
+  }, [count, tex])
 
-    if (materials) {
-      for (const snowMaterial of materials) {
-        const mesh = new THREE.InstancedMesh(
-          snowGeometry,
-          snowMaterial,
-          adjustedCount,
-        )
+  const [mesh, setMesh] = useState<THREE.InstancedMesh>(generateMesh())
 
-        for (let i = 0; i < (adjustedCount); i++) {
-          calcMatrix.setPosition(
+  useFrame(({ clock }) => {
+    if (count) {
+      for (let i = 0; i < count; i++) {
+        mesh.getMatrixAt(i, calcMatrix)
+
+        calcMatrix.decompose(calcObj3D.position, calcObj3D.quaternion, calcObj3D.scale)
+
+        if (calcObj3D.position.y < -1) {
+          calcObj3D.position.set(
             (Math.random() * 2) - 1,
-            Math.random(),
+            (Math.random() * 1) + 1,
             (Math.random() * 2) - 1,
           )
-
-          mesh.setMatrixAt(i, calcMatrix)
+        } else {
+          calcObj3D.position.x += (Math.cos(clock.elapsedTime + i) / 2000)
+          calcObj3D.position.y -= BASE_VELOCITY
+          calcObj3D.position.z += (Math.sin(clock.elapsedTime + i) / 2000)
         }
 
-        mesh.instanceMatrix!.needsUpdate = true
-        newMeshes.push(mesh)
+        const newRotation = clock.elapsedTime + i
+
+        calcObj3D.rotation.set(
+          newRotation,
+          newRotation,
+          newRotation,
+        )
+        
+        calcObj3D.updateMatrix()
+        mesh.setMatrixAt(i, calcObj3D.matrix)
       }
-    }
 
-    return newMeshes
-  }, [adjustedCount, materials])
-
-  useFrame(() => {
-    if (meshes) {
-      for (const mesh of meshes) {
-        for (let i = 0; i < adjustedCount; i++) {
-          mesh.getMatrixAt(i, calcMatrix)
-
-          calcVec.setFromMatrixPosition(calcMatrix)
-
-          if (calcVec.y < -0.5) {
-            calcMatrix.setPosition(
-              (Math.random() * 2) - 1,
-              (Math.random() * 0.25) + 0.5,
-              (Math.random() * 2) - 1,
-            )
-          } else {
-            calcMatrix.setPosition(
-              calcVec.x,
-              calcVec.y - BASE_VELOCITY,
-              calcVec.z,
-            )
-          }
-
-          mesh.setMatrixAt(i, calcMatrix)
-        }
-
-        mesh.instanceMatrix!.needsUpdate = true
-      }
+      mesh.instanceMatrix!.needsUpdate = true
     }
   })
 
   useEffect(() => {
-    if (adjustedCount) {
-      setMeshes((prevMeshes) => {
-        if (prevMeshes) {
-          prevMeshes.forEach((mesh) => {
-            mesh.geometry.dispose()
-          })
-        }
+    setMesh((prevMesh) => {
+      if (prevMesh) {
+        prevMesh.dispose()
+      }
 
-        return initializeSnow()
-      })
-    }
-  }, [adjustedCount, initializeSnow])
+      return generateMesh()
+    })
+  }, [generateMesh])
+
+  return mesh
 }

@@ -15,7 +15,7 @@ const rainMaterial = new THREE.MeshBasicMaterial({
 })
 
 export function useRain(count: number | null) {
-  const [mesh, setMesh] = useState<THREE.InstancedMesh>()
+  const [mesh, setMesh] = useState<THREE.InstancedMesh | null>(null)
 
   const initializeRainPositions = useCallback(() => {
     if (mesh) {
@@ -65,7 +65,7 @@ export function useRain(count: number | null) {
     if (count) {
       setMesh((prevMesh) => {
         if (prevMesh) {
-          prevMesh.geometry.dispose()
+          prevMesh.dispose()
         }
 
         return new THREE.InstancedMesh(
