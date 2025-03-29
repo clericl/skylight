@@ -25,7 +25,7 @@ export function useConstellations(constellationList: Constellation[], localPosit
   
   const [[constellationsArr, pointsMesh, constellationsGroup]] = useState<[
     Line2[][],
-    THREE.InstancedMesh,
+    THREE.InstancedMesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>,
     THREE.Group,
   ]>(() => {
     const constellationsArr: Line2[][] = []

@@ -12,13 +12,14 @@ export function Rain() {
     if (weatherData) {
       const category = getWeatherCategory(weatherData)
 
-      if (category !== WeatherCategory.RAIN) return null
-
-      return getWeatherQuantity(weatherData)
+      if (category === WeatherCategory.RAIN) {
+        return getWeatherQuantity(weatherData)
+      }
     }
 
-    return null
+    return 0
   }, [weather.data])
+
 
   const rainMesh = useRain(rainAmount)
 

@@ -9,7 +9,7 @@ const calcObj3D = new THREE.Object3D()
 
 const snowGeometry = new THREE.PlaneGeometry(0.01, 0.01)
 
-export function useSnow(count: number | null, tex: THREE.Texture) {
+export function useSnow(count: number, tex: THREE.Texture) {
   const generateMesh = useCallback(() => {
     const snowMaterial = new THREE.MeshBasicMaterial({
       blending: THREE.AdditiveBlending,
@@ -23,10 +23,10 @@ export function useSnow(count: number | null, tex: THREE.Texture) {
     const newMesh = new THREE.InstancedMesh(
       snowGeometry,
       snowMaterial,
-      count ?? 0,
+      count,
     )
 
-    for (let i = 0; i < (count ?? 0); i++) {
+    for (let i = 0; i < count; i++) {
       calcMatrix.setPosition(
         (Math.random() * 2) - 1,
         (Math.random() * 2),

@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import constellations from "../../assets/constellations.json"
 import { calcSunPosition } from '../../utils'
 import { useCallback, useMemo, useRef } from 'react'
-import { useConstellations, useLocation, useStarfield } from '../../hooks'
+import { useConstellations, useLocation, useStarfield, useWeather } from '../../hooks'
 import { useFrame } from "@react-three/fiber"
 import { useInterval } from 'usehooks-ts'
 import { Moon } from '../moon'
@@ -19,7 +19,6 @@ export function CelestialSphere() {
   const { constellationsGroup, pointsMesh } = useConstellations(constellations as Constellation[])
   const labelsRef = useRef<THREE.Group>(null)
   const starsRef = useRef<THREE.Group>(null)
-  const utilRef = useRef<THREE.Group>(null)
   const needsToRotateRef = useRef(true)
   const constellationsRef = useRef<THREE.Group>(null)
 
@@ -28,6 +27,12 @@ export function CelestialSphere() {
   )), [])
 
   const location = useLocation()
+  const weather = useWeather()
+
+  const cloudsAreOut = useMemo(
+    () => !!weather.data?.weather.type,
+    [weather.data]
+  )
 
   const updateStarVisibility = useCallback(() => {
     const { altitude } = calcSunPosition(location.data)
@@ -35,7 +40,7 @@ export function CelestialSphere() {
     const smoothedOpacity = 1 - THREE.MathUtils.smoothstep(altitude, -0.3, 0.4)
 
     if (starsRef.current) {      
-      starsRef.current.visible = smoothedOpacity >= 0.5
+      starsRef.current.visible = !cloudsAreOut && smoothedOpacity >= 0.5
 
       starsRef.current.traverse((node) => {
         const mat = (node as THREE.Mesh).material as THREE.Material
@@ -47,9 +52,9 @@ export function CelestialSphere() {
     }
 
     if (constellationsRef.current) {
-      constellationsRef.current.visible = smoothedOpacity >= 0.5
+      constellationsRef.current.visible = cloudsAreOut ? false : (smoothedOpacity >= 0.5)
     }
-  }, [location.data])
+  }, [cloudsAreOut, location.data])
 
   useInterval(updateStarVisibility, CELESTIAL_UPDATE_INTERVAL)
   
@@ -66,26 +71,15 @@ export function CelestialSphere() {
         labelsRef.current.children.forEach((child) => {
           child.lookAt(unitVec)
         })
-        utilRef.current!.children.forEach((child) => {
-          child.lookAt(unitVec)
-        })
       }
     }
   })
 
   return (
-    <>
+    <group scale={[8, 8, 8]}>
       <group ref={starsRef} visible={false}>
         <primitive object={starfieldMesh} />
         <primitive object={pointsMesh} />
-        <group ref={utilRef}>
-          {/* <Text fontSize={0.1} position={[0, 1, -0.1]}>
-            North
-          </Text>
-          <Text fontSize={0.1} position={[0, 1, 0.1]}>
-            South
-          </Text> */}
-        </group>
       </group>
 
       <Moon />
@@ -96,6 +90,6 @@ export function CelestialSphere() {
           {labels}
         </group>
       </group>
-    </>
+    </group>
   )
 }

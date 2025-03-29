@@ -6,7 +6,7 @@ export function Weather() {
   return (
     <group position={[0, 0.4, 0]}>
       <Clouds />
-      {/* <Rain /> */}
+      <Rain />
       <Snow />
     </group>
   )

@@ -24,12 +24,12 @@ export function Snow() {
     if (weatherData) {
       const category = getWeatherCategory(weatherData)
 
-      if (category !== WeatherCategory.SNOW) return null
-
-      return getWeatherQuantity(weatherData)
+      if (category === WeatherCategory.SNOW) {
+        return getWeatherQuantity(weatherData)
+      }
     }
 
-    return null
+    return 0
   }, [weather.data])
 
   const mesh1 = useSnow(snowAmount, tex1)

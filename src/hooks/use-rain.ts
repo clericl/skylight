@@ -14,7 +14,7 @@ const rainMaterial = new THREE.MeshBasicMaterial({
   transparent: true,
 })
 
-export function useRain(count: number | null) {
+export function useRain(count: number) {
   const [mesh, setMesh] = useState<THREE.InstancedMesh | null>(null)
 
   const initializeRainPositions = useCallback(() => {

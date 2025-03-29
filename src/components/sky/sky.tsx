@@ -1,10 +1,10 @@
 import * as THREE from 'three'
+import { calcSunPosition } from '../../utils';
 import { useFrame } from "@react-three/fiber";
 import { useLocation } from '../../hooks';
 import { useRef } from 'react';
 import { Sky as DreiSky } from '@react-three/drei'
 import { SkyGeometry } from 'three/examples/jsm/Addons.js';
-import { calcSunPosition } from '../../utils';
 
 const calcVec = new THREE.Vector3()
 
@@ -36,10 +36,10 @@ export function Sky() {
 
   return (
     <>
-      <DreiSky distance={2.04} ref={dayRef} />
+      <DreiSky ref={dayRef} />
       
       <mesh ref={nightRef}>
-        <sphereGeometry args={[.99]} />
+        <sphereGeometry args={[8.1]} />
         <meshBasicMaterial
           color={NIGHT_COLOR}
           side={THREE.BackSide}
