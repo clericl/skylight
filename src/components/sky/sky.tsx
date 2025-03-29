@@ -4,7 +4,6 @@ import { useFrame } from "@react-three/fiber";
 import { useLocation } from '../../hooks';
 import { useRef } from 'react';
 import { Sky as DreiSky } from '@react-three/drei'
-import { SkyGeometry } from 'three/examples/jsm/Addons.js';
 
 const calcVec = new THREE.Vector3()
 
@@ -12,7 +11,7 @@ const DAY_COLOR = new THREE.Color(0xa1c5ff)
 const NIGHT_COLOR = new THREE.Color(0x091133)
 
 export function Sky() {
-  const dayRef = useRef<THREE.Mesh<SkyGeometry, THREE.ShaderMaterial>>(null)
+  const dayRef = useRef<THREE.Mesh<THREE.BoxGeometry, THREE.ShaderMaterial>>(null)
   const nightRef = useRef<THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>>(null)
   const location = useLocation()
   
@@ -37,7 +36,7 @@ export function Sky() {
   return (
     <>
       <DreiSky ref={dayRef} />
-      
+    
       <mesh ref={nightRef}>
         <sphereGeometry args={[8.1]} />
         <meshBasicMaterial
