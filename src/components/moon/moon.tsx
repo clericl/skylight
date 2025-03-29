@@ -4,8 +4,9 @@ import { useFrame } from "@react-three/fiber"
 import { useRef } from "react"
 import { useLocation } from "../../hooks"
 import { MOON_SIZE } from "../../constants"
+import { calcMoonPosition } from "../../utils"
 
-const calcSpherical = new THREE.Spherical()
+const calcVec = new THREE.Vector3()
 const moonColor = new THREE.Color(1.5, 1.5, 1.2)
 
 export function Moon() {
@@ -13,14 +14,12 @@ export function Moon() {
   const location = useLocation()
 
   useFrame(() => {
-    const date = new Date()
     const place = location.data
     
-    const { altitude, azimuth } = SunCalc.getMoonPosition(date, place.latitude, place.longitude)
-    calcSpherical.set(1, (Math.PI / 2) - altitude, azimuth - Math.PI)
+    calcMoonPosition(place, calcVec)
 
     if (moonRef.current) {
-      moonRef.current.position.setFromSpherical(calcSpherical)
+      moonRef.current.position.copy(calcVec)
     }
   })
 
