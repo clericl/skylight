@@ -1,5 +1,4 @@
 import * as THREE from "three"
-import SunCalc from "suncalc"
 import { useFrame } from "@react-three/fiber"
 import { useRef } from "react"
 import { useLocation } from "../../hooks"
