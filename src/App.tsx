@@ -1,12 +1,12 @@
+import { styled } from '@mui/material'
 import { CelestialSphere } from './components/celestial-sphere'
 import { Clock } from './components/clock'
-import { Sky } from './components/sky'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Sky } from './components/sky'
 import { ThreeScene } from './components/three-scene'
-import { styled } from '@mui/material'
+import { Weather } from './components/weather'
 
 import './App.css'
-import { Weather } from './components/weather'
 
 const queryClient = new QueryClient()
 
